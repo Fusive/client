@@ -321,7 +321,11 @@ class webSocketVideoPlayer {
                 this.playAudio(this.currentAsset);
             }
             else if (this.currentAsset instanceof socketVoice || this.currentAsset.type === "voice") {
-                this.playVoice(this.currentAsset);
+                // this.playVoice(this.currentAsset);
+                this.assetPlaying = false;
+                if (this.assetQueue.length !== 0) {
+                    this.manageAssets();
+                }
             }
             else {
                 console.log(`[VideoPlayer]: Can't Play Unsupported File Types`);
