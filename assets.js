@@ -25,3 +25,27 @@ new socketAudio(
     volume = 0.4,
     local = false
 );
+
+// ADD A VOICE
+new socketVoice(
+    title = "Hydrate",
+    asset = "You gotta drink water", // Here You Put What You Want The Text To Speech To Say
+    duration = null,
+    volume = 1,
+    voice = null, // Your PC Has Different Voices Downloaded, You Can Put A Number Between 0 And The Amount Of Voices You Have, If You Leave It At null Or Put A Number Grater Than The Number Of Voices You Have The Default Voice Will Be Selected Instead
+    pitch = 1, // This Is The Pitch Of The Voice, Choose A Number Between 0 And 2
+    rate = 1, // This Is The Rate At Which The Voice Will Speak, Choose A Number Between 0.1 And 10
+    userText = false // You Can Turn The Channel Point Redemption To A Prompted One So The User Can Write Some Text When It's Redeemed, If You Change This Option To true, What The User Wrote Will Be Said By The Text To Speech
+);
+
+// ADD A VOICE INPUT BY USER
+new socketVoice(
+    title = "Say Something",
+    asset = "", // If You Put true To The userText Option It Will Not Matter What You Write Here
+    duration = null,
+    volume = 1,
+    voice = null,
+    pitch = 1,
+    rate = 1,
+    userText = true
+);
