@@ -624,6 +624,6 @@ const bodyLoaded = () => {
     socketVoice.synth = window.speechSynthesis;
     setTimeout(() => {
         videoPlayer = new webSocketVideoPlayer(authCode=authCode, channelId=channelId, pingIntervalTime=150000, retryIntervalTime=5000, assetOffset=assetOffset);
-        socketControl = new webSocketControl(client=twitchUsername, version="1.0.7", adress=["jayexvideoplayer.ddns.net", "localhost", "192.168.0.10"], port="5567");
+        socketControl = new webSocketControl(client=twitchUsername, version="1.0.8", adress=["jayexvideoplayer.ddns.net", "localhost", "192.168.0.10"], port="5567");
     }, 500);
 };
