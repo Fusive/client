@@ -27,3 +27,23 @@ new socketAudio(
     volume = 0.4,
     local = false
 );
+
+// ADD A VOICE
+new socketVoice(
+    title = "Hydrate",
+    asset = "You gotta drink water", // Here You Put What You Want The Text To Speech To Say
+    duration = null,
+    volume = 1,
+    voice = null, // You Can Choose The Language The Text To Speech Will Speak In, If Left On Null English Language Will Be Choosen
+    userText = false // You Can Turn The Channel Point Redemption To A Prompted One So The User Can Write Some Text When It's Redeemed, If You Change This Option To true, What The User Wrote Will Be Said By The Text To Speech
+);
+
+// ADD A VOICE INPUT BY USER
+new socketVoice(
+    title = "Say Something",
+    asset = "", // If You Put true To The userText Option It Will Not Matter What You Write Here
+    duration = null,
+    volume = 1,
+    voice = "en",
+    userText = true
+);

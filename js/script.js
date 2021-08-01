@@ -59,28 +59,11 @@ class socketAudio extends socketAsset {
 // Voice Class, Create Voice Instances On assets.js
 class socketVoice extends socketAsset {
 
-    // Voice Variables
-    static synth;
-    static voices;
-    static defaultVoice;
-
-    // Load Voices
-    static loadVoices = () => {
-        socketVoice.voices = socketVoice.synth.getVoices();
-        for (let i of socketVoice.voices) {
-            if (i.default) {
-                socketVoice.defaultVoice = i;
-            }
-        }
-    }
-
     // Class Constructor
-    constructor (title, asset, duration=null, volume=1, voice=null, pitch=1, rate=1, userText=false, local=true) {
+    constructor (title, asset, duration=null, volume=1, voice=null, userText=false, local=false) {
         super(title, asset, duration, local);
         this.volume = volume;
-        this.voice = voice;
-        this.pitch = pitch;
-        this.rate = rate;
+        this.voice = voice == null ? 'en' : voice;
         this.userText = userText;
         this.type = "voice";
 
@@ -321,11 +304,7 @@ class webSocketVideoPlayer {
                 this.playAudio(this.currentAsset);
             }
             else if (this.currentAsset instanceof socketVoice || this.currentAsset.type === "voice") {
-                // this.playVoice(this.currentAsset);
-                this.assetPlaying = false;
-                if (this.assetQueue.length !== 0) {
-                    this.manageAssets();
-                }
+                this.playVoice(this.currentAsset);
             }
             else {
                 console.log(`[VideoPlayer]: Can't Play Unsupported File Types`);
@@ -437,6 +416,48 @@ class webSocketVideoPlayer {
 
     // Play The Voice And Remove It After It's Duration
     playVoice(asset) {
+        let audioTag = document.createElement("audio");
+        let sourceTag = document.createElement("source");
+        audioTag.load();
+        audioTag.autoplay = true;
+        audioTag.volume = asset.volume;
+        let url = `https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&client=tw-ob&prev=input&tl=${asset.voice}&q=${encodeURIComponent(asset.asset)}`;
+        sourceTag.src = url;
+        sourceTag.type = "audio/mpeg";
+        audioTag.appendChild(sourceTag);
+
+        let audioInterval = setInterval(() => {
+            if (audioTag.readyState === 4) {
+                document.body.appendChild(audioTag);
+                audioTag.play();
+                clearInterval(audioInterval);
+            }
+        });
+
+        audioTag.addEventListener('ended', () => {
+            audioTag.remove();
+            this.assetPlaying = false;
+            if (this.assetQueue.length !== 0) {
+                this.manageAssets();
+            }
+        });
+
+        if(asset.duration !== null) {
+            setTimeout(() => {
+                if (document.getElementsByTagName('audio').length !== 0) {
+                    audioTag.remove();
+                    this.assetPlaying = false;
+                    if (this.assetQueue.length !== 0) {
+                        this.manageAssets();
+                    }
+                }
+            }, asset.duration * 1000);
+        }
+    }
+
+
+    // Play The Voice And Remove It After It's Duration
+    playVoice2(asset) {
         let message = new SpeechSynthesisUtterance(asset.asset);
         message.voice = (asset.voice) ? socketVoice.voices[asset.voice] : socketVoice.defaultVoice;
         message.volume = asset.volume;
@@ -537,8 +558,6 @@ class webSocketControl {
                     else if (message.asset.type === "voice") {
                         asset.volume = message.asset.volume;
                         asset.voice = message.asset.voice;
-                        asset.pitch = message.asset.pitch;
-                        asset.rate = message.asset.rate;
                     }
                     videoPlayer.assetQueue.push(asset);
                     videoPlayer.manageAssets();
@@ -604,7 +623,6 @@ class webSocketControl {
 const bodyLoaded = () => {
     socketVoice.synth = window.speechSynthesis;
     setTimeout(() => {
-        socketVoice.loadVoices();
         videoPlayer = new webSocketVideoPlayer(authCode=authCode, channelId=channelId, pingIntervalTime=150000, retryIntervalTime=5000, assetOffset=assetOffset);
         socketControl = new webSocketControl(client=twitchUsername, version="1.0.7", adress=["jayexvideoplayer.ddns.net", "localhost", "192.168.0.10"], port="5567");
     }, 500);
