@@ -10,11 +10,10 @@ class socketAsset {
     static assetList = [];
 
     // Class Constructor
-    constructor(title, asset, duration, local) {
+    constructor(title, asset, duration) {
         this.title = title;
         this.asset = asset;
         this.duration = duration;
-        this.local = local;
     }
 }
 
@@ -23,8 +22,9 @@ class socketVideo extends socketAsset {
 
     // Class Constructor
     constructor (title, asset, duration=null, volume=1, local=true) {
-        super(title, asset, duration, local);
-        this.volume = volume;
+        super(title, asset, duration);
+        this.local = local;
+        this.volume = volume * volume;
         this.type = "video";
 
         socketAsset.assetList.push(this);
@@ -36,7 +36,8 @@ class socketImage extends socketAsset {
 
     // Class Constructor
     constructor (title, asset, duration=10, local=true) {
-        super(title, asset, duration, local);
+        super(title, asset, duration);
+        this.local = local;
         this.type = "image";
 
         socketAsset.assetList.push(this);
@@ -48,8 +49,9 @@ class socketAudio extends socketAsset {
 
     // Class Constructor
     constructor (title, asset, duration=null, volume=1, local=true) {
-        super(title, asset, duration, local);
-        this.volume = volume;
+        super(title, asset, duration);
+        this.local = local;
+        this.volume = volume * volume;
         this.type = "audio";
 
         socketAsset.assetList.push(this);
@@ -60,9 +62,9 @@ class socketAudio extends socketAsset {
 class socketVoice extends socketAsset {
 
     // Class Constructor
-    constructor (title, asset, duration=null, volume=1, voice=null, userText=false, local=false) {
-        super(title, asset, duration, local);
-        this.volume = volume;
+    constructor (title, asset, duration=null, volume=1, voice=null, userText=false) {
+        super(title, asset, duration);
+        this.volume = volume * volume;
         this.voice = voice == null ? 'en' : voice;
         this.userText = userText;
         this.type = "voice";
