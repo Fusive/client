@@ -1,0 +1,19 @@
+{
+    "name": "fusive-app",
+    "version": "1.0.0",
+    "description": "Client's App For Playing Media On Stream",
+    "main": "index.js",
+    "scripts": {
+        "dev": "electron src/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Fusive/client.git"
+    },
+    "author": "Jayex Designs",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Fusive/client/issues"
+    },
+    "homepage": "https://github.com/Fusive/client#readme"
+}
