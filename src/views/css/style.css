@@ -1,0 +1,159 @@
+body, body * {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', arial;
+    color: #ffffff;
+}
+
+body {
+    background-color: #1a1a1a;
+}
+
+h1 {
+    text-align: center;
+    color: #ffffff;
+    margin: 2rem 0;
+}
+
+/* Color Palette
+#3c1642
+#086375
+#1dd3b0
+#affc41
+#b2ff9e
+*/
+
+
+
+#no-assets {
+    color: #575757;
+    align-self: center;
+    text-align: center;
+    line-height: 2;
+}
+#no-assets > kbd {
+    position: relative;
+    background-color: #dbdbdb;
+    color: #969696;
+    border: 0.1rem solid #969696;
+    border-bottom: 0.2rem solid #969696;
+    border-radius: 0.2rem;
+    padding: 0.15rem 0.3rem;
+}
+
+
+
+
+
+#assets-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    min-height: 65vh;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 5rem;
+}
+
+.asset-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 15rem;
+    height: 20rem;
+    background-color: #0a0a0a;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 1rem 0.5rem rgba(0, 0, 0, 0.5);
+    transition: .25s;
+    margin: 1rem 1.5rem;
+}
+.asset-container:hover {
+    transform: scale(1.035);
+    box-shadow: 0 0 1rem 0.3rem rgba(0, 0, 0, 0.5);
+}
+
+.asset-preview {
+    display: flex;
+    justify-content: center;
+}
+.asset-preview > * {
+    width: 100%;
+}
+
+.asset-options > * {
+    width: 5rem;
+    height: 2rem;
+    margin: 0 0.7rem;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s;
+}
+.asset-edit {
+    background-color: #0099ff;
+}
+.asset-edit:hover {
+    background-color: #ffffff;
+    color: #0099ff;
+}
+.asset-delete {
+    background-color: #f44336;
+}
+.asset-delete:hover {
+    background-color: #ffffff;
+    color: #f44336;
+}
+
+
+
+
+
+#obs-button {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    cursor: pointer;
+    background-color: #1dd3b0;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-weight: 700;
+    z-index: 1;
+    font-size: 1rem;
+    transition: .25s;
+}
+#obs-button:hover {
+    background-color: #ffffff;
+    color: #1dd3b0;
+}
+
+
+
+
+
+/* Edit Scrollbar */
+/* Width */
+::-webkit-scrollbar {
+    width: 1rem;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #353535;
+}
+/* Handle On Hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #333333;
+}
+
+
+
+/* Remove Input Outlines */
+input:focus, button:focus, textarea:focus, select:focus {
+    outline: none;
+}
