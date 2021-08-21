@@ -38,7 +38,8 @@ app.on('ready', () => {
 const addNewAssetWindow = () => {
     newAssetWindow = new BrowserWindow({
         width: 850,
-        height: 450,
+        height: 600,
+        resizable: false,
         webPreferences: {
             devTools: process.env.NODE !== undefined ? true : false,
             nodeIntegration: true,
