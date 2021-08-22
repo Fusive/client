@@ -15,7 +15,7 @@ var newAssetWindow;
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
         width: 1000,
-        height: 600,
+        height: 680,
         webPreferences: {
             devTools: process.env.NODE !== undefined ? true : false,
             nodeIntegration: true,
@@ -61,6 +61,8 @@ const addNewAssetWindow = () => {
 
 
 ipcMain.on('asset:new', (e, newAsset) => {
+    console.log(newAsset);
+    newAssetWindow.webContents.send('process:loading');
     mainWindow.webContents.send('asset:new', newAsset);
     e.sender.destroy();
 });

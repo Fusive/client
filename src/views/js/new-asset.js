@@ -1,3 +1,5 @@
+const { ipcRenderer } = require('electron');
+
 const handleLoad = () => {
     var typeSelected;
 
@@ -34,6 +36,7 @@ const handleLoad = () => {
 
 
 
+    var assetSelected = null;
     const assetInput = document.getElementById("asset-file-input");
     assetInput.addEventListener('change', () => {
         if (assetInput.files.length === 0) {
@@ -42,12 +45,15 @@ const handleLoad = () => {
         let logs = document.getElementById("asset-file-logs");
         if (assetInput.files.length !== 1) {
             logs.innerText = "Please select onle one file";
+            assetSelected = null;
         }
-        if (['.mp4', '.jpg', '.png', '.gif', '.mp3'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
-            logs.innerText = `File selected: ${assetInput.files[0].name}`;
+        if (!['.mp4', '.jpg', '.png', '.gif', '.mp3'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
+            logs.innerText = "Please select a valid file, possible files are: .mp4, .jpg, .png, .gif and .mp3";
+            assetSelected = null;
         }
         else {
-            logs.innerText = "Please select a valid file, possible files are: .mp4, .jpg, .png, .gif and .mp3";
+            assetSelected = assetInput.files[0].name
+            logs.innerText = `File selected: ${assetSelected}`;
         }
     });
 
@@ -104,26 +110,146 @@ const handleLoad = () => {
     saveButton.addEventListener('click', e => {
         e.preventDefault();
         let data = {};
+        if (typeSelected === "VIDEO") data['type'] = "Video";
+        if (typeSelected === "AUDIO") data['type'] = "Audio";
         if (typeSelected === "VIDEO" || typeSelected === "AUDIO") {
+            data['asset'] = assetSelected;
             data['title'] = document.getElementById("asset-title-input").value;
             data['volume'] = document.getElementById("asset-volume-input").value;
             data['duration'] = document.getElementById("asset-duration-input").value;
+
+            //Checks
+            if (data['asset'] === null) {
+                showAlert("Please add a file");
+                return;
+            }
+            if (data['title'] === "") {
+                showAlert("Please fill the title field");
+                return;
+            }
+            if (data['volume'] === "") {
+                showAlert("Please fill the volume field");
+                return;
+            }
+            else if (parseInt(data['volume']) > 100 || parseInt(data['volume']) < 0) {
+                showAlert("The volume field needs a value between 0 and 100");
+                return;
+            }
+            if (data['duration'] !== "" && parseInt(data['duration']) < 0) {
+                showAlert("The duration can't be a negative number");
+                return;
+            }
+            data['duration'] = (data['duration'] === "") ? null : parseInt(data['duration']);
+            data['volume'] = parseInt(data['volume']);
         }
         else if (typeSelected === "IMAGE/GIF") {
+            data['type'] = "Image/Gif";
+            data['asset'] = assetSelected;
             data['title'] = document.getElementById("asset-title-input").value;
             data['duration'] = document.getElementById("asset-duration-input").value;
+
+            //Checks
+            if (data['asset'] === null) {
+                showAlert("Please add a file");
+                return;
+            }
+            if (data['title'] === "") {
+                showAlert("Please fill the title field");
+                return;
+            }
+            if (data['duration'] === "") {
+                showAlert("Please fill the duration field");
+                return;
+            }
+            if (parseInt(data['duration']) < 0) {
+                showAlert("The duration can't be a negative number");
+                return;
+            }
+            data['duration'] = parseInt(data['duration']);
         }
         else if (typeSelected === "VOICE") {
+            data['type'] = "Voice";
             data['text'] = document.getElementById("asset-text-area").value;
             data['title'] = document.getElementById("asset-title-input").value;
             data['volume'] = document.getElementById("asset-volume-input").value;
             data['duration'] = document.getElementById("asset-duration-input").value;
             data['voice'] = document.getElementById("asset-voice-input").value;
             data['userText'] = document.getElementById("asset-user-text-input").value;
+
+            //Checks
+            data['userText'] = data['userText'] == "true";
+            if (data['text'] === "" && data['userText'] === false) {
+                showAlert("Please fill the text to read field");
+                return;
+            }
+            else if (data['userText'] === true) {
+                data['text'] = null;
+            }
+            else if (data['text'].length > 200) {
+                showAlert("Max length for text to read is 200 characters");
+                return;
+            }
+            if (data['title'] === "") {
+                showAlert("Please fill the title field");
+                return;
+            }
+            if (data['volume'] === "") {
+                showAlert("Please fill the volume field");
+                return;
+            }
+            else if (parseInt(data['volume']) > 100 || parseInt(data['volume']) < 0) {
+                showAlert("The volume field needs a value between 0 and 100");
+                return;
+            }
+            if (data['duration'] !== "" && parseInt(data['duration']) < 0) {
+                showAlert("The duration can't be a negative number");
+                return;
+            }
+            data['duration'] = (data['duration'] === "") ? null : parseInt(data['duration']);
+            data['volume'] = parseInt(data['volume']);
         }
-        document.body.innerHTML = "";
+        let output = "";
         for (i in data) {
-            document.body.innerHTML += `${i}: ${data[i]}<br/>`;
+            output += `${i}: ${data[i]}\n`;
         }
+        showAlert(output);
+        ipcRenderer.send('asset:new', data);
+    });
+
+
+
+    var currentAlertTimeout;
+    const showAlert = (text) => {
+        if (currentAlertTimeout) {
+            clearTimeout(currentAlertTimeout);
+        }
+        let alertElement = document.getElementById("alert");
+        alertElement.innerText = text;
+        alertElement.style.opacity = "1";
+        alertElement.style.bottom = "3%";
+        currentAlertTimeout = setTimeout(() => {
+            alertElement.style.opacity = "0";
+            alertElement.style.bottom = "-20%";
+            currentAlertTimeout = undefined;
+        }, 3000);
+    }
+
+
+
+    ipcRenderer.on('process:loading', e => {
+        document.body.innerHTML = `
+        <div id="loading">
+            Saving...
+        </div>
+        `;
+        let loadingText = document.getElementById('loading');
+        setInterval(() => {
+            if (loadingText.innerText.substr(loadingText.innerText.length-3, 3) === "...") {
+                loadingText.innerText = loadingText.innerText.substring(0, loadingText.innerText.length-3)
+            }
+            else {
+                loadingText.innerText = `${loadingText.innerText}.`
+            }
+        }, 350);
     });
 }

@@ -7,11 +7,39 @@ body, body * {
 
 body {
     background-color: #1a1a1a;
+    overflow: hidden;
 }
 
 
 
 
+
+#alert {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    z-index: 3;
+    position: absolute;
+    left: 2%;
+    bottom: -20%;
+    opacity: 0;
+    min-width: 10rem;
+    max-width: 25%;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+    transition: .5s;
+}
+
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    font-size: 2rem;
+}
 
 #asset-type {
     position: absolute;
