@@ -22,6 +22,10 @@ const handleLoad = () => {
                 document.getElementById("asset-file").remove();
             }
 
+            if (typeSelected === "VIDEO") document.getElementById("asset-file-input").accept = ".mp4";
+            if (typeSelected === "IMAGE/GIF") document.getElementById("asset-file-input").accept = ".jpg, .png, .gif";
+            if (typeSelected === "AUDIO") document.getElementById("asset-file-input").accept = ".mp3";
+
             let assetTypeMenu = document.getElementById("asset-type");
             assetTypeMenu.style.opacity = "0";
             setTimeout(() => {
@@ -47,13 +51,22 @@ const handleLoad = () => {
             logs.innerText = "Please select onle one file";
             assetSelected = null;
         }
-        if (!['.mp4', '.jpg', '.png', '.gif', '.mp3'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
-            logs.innerText = "Please select a valid file, possible files are: .mp4, .jpg, .png, .gif and .mp3";
+        if (typeSelected === "VIDEO" && !['.mp4'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
+            logs.innerText = "Please select a valid file, possible files types are: .mp4";
+            assetSelected = null;
+        }
+        else if (typeSelected === "IMAGE/GIF" && !['.jpg', '.png', '.gif'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
+            logs.innerText = "Please select a valid file, possible files types are: .jpg, .png and .gif";
+            assetSelected = null;
+        }
+        else if (typeSelected === "AUDIO" && !['.mp3'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
+            logs.innerText = "Please select a valid file, possible files types are: .mp3";
             assetSelected = null;
         }
         else {
-            assetSelected = assetInput.files[0].name
-            logs.innerText = `File selected: ${assetSelected}`;
+            assetSelected = assetInput.files[0]
+            console.log(assetSelected);
+            logs.innerText = `File selected: ${assetSelected.name}`;
         }
     });
 
@@ -113,7 +126,7 @@ const handleLoad = () => {
         if (typeSelected === "VIDEO") data['type'] = "Video";
         if (typeSelected === "AUDIO") data['type'] = "Audio";
         if (typeSelected === "VIDEO" || typeSelected === "AUDIO") {
-            data['asset'] = assetSelected;
+            data['asset'] = assetSelected.path;
             data['title'] = document.getElementById("asset-title-input").value;
             data['volume'] = document.getElementById("asset-volume-input").value;
             data['duration'] = document.getElementById("asset-duration-input").value;
@@ -144,7 +157,7 @@ const handleLoad = () => {
         }
         else if (typeSelected === "IMAGE/GIF") {
             data['type'] = "Image/Gif";
-            data['asset'] = assetSelected;
+            data['asset'] = assetSelected.path;
             data['title'] = document.getElementById("asset-title-input").value;
             data['duration'] = document.getElementById("asset-duration-input").value;
 
@@ -208,11 +221,6 @@ const handleLoad = () => {
             data['duration'] = (data['duration'] === "") ? null : parseInt(data['duration']);
             data['volume'] = parseInt(data['volume']);
         }
-        let output = "";
-        for (i in data) {
-            output += `${i}: ${data[i]}\n`;
-        }
-        showAlert(output);
         ipcRenderer.send('asset:new', data);
     });
 
