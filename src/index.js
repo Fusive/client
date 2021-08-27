@@ -82,7 +82,7 @@ const createDatabaseFolders = () => {
 
 ipcMain.on('path:get', async (e) => {
     let appPath = __dirname;
-    appPath = process.env.NODE !== undefined ? path.join(appPath, "../") : appPath;
+    appPath = process.env.NODE !== undefined ? path.join(appPath, "../") : path.join(appPath, "../../../");
     e.sender.send('path:get', appPath);
 });
 
