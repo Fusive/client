@@ -95,8 +95,10 @@ ipcMain.on('asset:new', async (e, newAsset) => {
     newAsset['local'] = true;
     newAsset['id'] = await dFuncs.createId(database);
 
-    fs.writeFileSync(`./data/assets/${newAsset['id']}.${newAsset['assetName'].substr(newAsset['assetName'].length-3,3)}`, new Buffer.from(newAsset['assetContent']));
-    delete newAsset['assetContent'];
+    if (newAsset['assetName']) {
+        fs.writeFileSync(`./data/assets/${newAsset['id']}.${newAsset['assetName'].substr(newAsset['assetName'].length-3,3)}`, new Buffer.from(newAsset['assetContent']));
+        delete newAsset['assetContent'];
+    }
 
     await dFuncs.addAsset(database, newAsset);
     await mainWindow.webContents.send('asset:new', newAsset);

@@ -76,10 +76,12 @@ const dFuncs = {
         if (data['assets'] !== undefined) {
             for (let i = 0; i < data['assets'].length; ++i) {
                 if (data['assets'][i]['id'] == id) {
-                    let fileName = `${data['assets'][i]['id']}.${data['assets'][i]['assetName'].substr(data['assets'][i]['assetName'].length-3,3)}`;
-                    let filePath = path.join(database, "../", `./assets/${fileName}`);
-                    if (fs.existsSync(filePath)) {
-                        fs.unlinkSync(filePath);
+                    if (data['assets'][i]['assetName']) {
+                        let fileName = `${data['assets'][i]['id']}.${data['assets'][i]['assetName'].substr(data['assets'][i]['assetName'].length-3,3)}`;
+                        let filePath = path.join(database, "../", `./assets/${fileName}`);
+                        if (fs.existsSync(filePath)) {
+                            fs.unlinkSync(filePath);
+                        }
                     }
 
                     data['assets'].splice(i, 1);
