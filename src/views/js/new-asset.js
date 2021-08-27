@@ -40,7 +40,8 @@ const handleLoad = () => {
 
 
 
-    var assetSelected = null;
+    var assetSelectedName = null;
+    var assetSelectedContent = null;
     const assetInput = document.getElementById("asset-file-input");
     assetInput.addEventListener('change', () => {
         if (assetInput.files.length === 0) {
@@ -49,24 +50,33 @@ const handleLoad = () => {
         let logs = document.getElementById("asset-file-logs");
         if (assetInput.files.length !== 1) {
             logs.innerText = "Please select onle one file";
-            assetSelected = null;
+            assetSelectedName = null;
+            assetSelectedContent = null;
         }
         if (typeSelected === "VIDEO" && !['.mp4'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
             logs.innerText = "Please select a valid file, possible files types are: .mp4";
-            assetSelected = null;
+            assetSelectedName = null;
+            assetSelectedContent = null;
         }
         else if (typeSelected === "IMAGE/GIF" && !['.jpg', '.png', '.gif'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
             logs.innerText = "Please select a valid file, possible files types are: .jpg, .png and .gif";
-            assetSelected = null;
+            assetSelectedName = null;
+            assetSelectedContent = null;
         }
         else if (typeSelected === "AUDIO" && !['.mp3'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
             logs.innerText = "Please select a valid file, possible files types are: .mp3";
-            assetSelected = null;
+            assetSelectedName = null;
+            assetSelectedContent = null;
         }
         else {
-            assetSelected = assetInput.files[0]
-            console.log(assetSelected);
-            logs.innerText = `File selected: ${assetSelected.name}`;
+            assetSelectedName = assetInput.files[0].name;
+            logs.innerText = `File selected: ${assetSelectedName}`;
+
+            var reader = new FileReader();
+            reader.onload = e => {
+                assetSelectedContent = e.target.result;
+            }
+            reader.readAsArrayBuffer(assetInput.files[0]);
         }
     });
 
@@ -126,13 +136,14 @@ const handleLoad = () => {
         if (typeSelected === "VIDEO") data['type'] = "Video";
         if (typeSelected === "AUDIO") data['type'] = "Audio";
         if (typeSelected === "VIDEO" || typeSelected === "AUDIO") {
-            data['asset'] = assetSelected.path;
+            data['assetContent'] = assetSelectedContent;
+            data['assetName'] = assetSelectedName;
             data['title'] = document.getElementById("asset-title-input").value;
             data['volume'] = document.getElementById("asset-volume-input").value;
             data['duration'] = document.getElementById("asset-duration-input").value;
 
             //Checks
-            if (data['asset'] === null) {
+            if (data['assetName'] === null) {
                 showAlert("Please add a file");
                 return;
             }
@@ -157,12 +168,13 @@ const handleLoad = () => {
         }
         else if (typeSelected === "IMAGE/GIF") {
             data['type'] = "Image/Gif";
-            data['asset'] = assetSelected.path;
+            data['assetContent'] = assetSelectedContent;
+            data['assetName'] = assetSelectedName;
             data['title'] = document.getElementById("asset-title-input").value;
             data['duration'] = document.getElementById("asset-duration-input").value;
 
             //Checks
-            if (data['asset'] === null) {
+            if (data['assetName'] === null) {
                 showAlert("Please add a file");
                 return;
             }
@@ -221,6 +233,22 @@ const handleLoad = () => {
             data['duration'] = (data['duration'] === "") ? null : parseInt(data['duration']);
             data['volume'] = parseInt(data['volume']);
         }
+
+        document.body.innerHTML = `
+        <div id="loading">
+            Saving...
+        </div>
+        `;
+        let loadingText = document.getElementById('loading');
+        setInterval(() => {
+            if (loadingText.innerText.substr(loadingText.innerText.length-3, 3) === "...") {
+                loadingText.innerText = loadingText.innerText.substring(0, loadingText.innerText.length-3)
+            }
+            else {
+                loadingText.innerText = `${loadingText.innerText}.`
+            }
+        }, 350);
+
         ipcRenderer.send('asset:new', data);
     });
 
@@ -241,23 +269,4 @@ const handleLoad = () => {
             currentAlertTimeout = undefined;
         }, 3000);
     }
-
-
-
-    ipcRenderer.on('process:loading', e => {
-        document.body.innerHTML = `
-        <div id="loading">
-            Saving...
-        </div>
-        `;
-        let loadingText = document.getElementById('loading');
-        setInterval(() => {
-            if (loadingText.innerText.substr(loadingText.innerText.length-3, 3) === "...") {
-                loadingText.innerText = loadingText.innerText.substring(0, loadingText.innerText.length-3)
-            }
-            else {
-                loadingText.innerText = `${loadingText.innerText}.`
-            }
-        }, 350);
-    });
 }
