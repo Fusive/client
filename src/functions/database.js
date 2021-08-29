@@ -4,6 +4,16 @@ const path = require('path');
 const gFuncs = require('./general');
 
 const dFuncs = {
+    async createDatabaseFolders() {
+        if (!fs.existsSync('./data')) {
+            fs.mkdirSync('./data');
+            fs.mkdirSync('./data/assets');
+        }
+        else if (!fs.existsSync('./data/assets')) {
+            fs.mkdirSync('./data/assets');
+        }
+    },
+
     async createDatabase(database) {
         fs.writeFileSync(database, "{}");
     },
@@ -145,24 +155,6 @@ const dFuncs = {
             }
         }
         return false;
-    },
-
-
-
-    async getContentSaved(database) {
-        let data = await this.readFromDatabase(database);
-        if (data['saved'] === undefined) {
-            data['saved'] = true;
-            await this.writeDataToDatabase(database, data);
-        }
-        return data['saved'];
-    },
-
-    async setContentSaved(database, state) {
-        let data = await this.readFromDatabase(database);
-        data['saved'] = state;
-        await this.writeDataToDatabase(database, data);
-        return true;
     },
 }
 

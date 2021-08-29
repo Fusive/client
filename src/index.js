@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const gFuncs = require('./functions/general');
 const dFuncs = require('./functions/database');
+const eFuncs = require('./functions/export');
 
 if (process.env.NODE !== undefined) {
     require('electron-reload')(__dirname, {
@@ -13,14 +14,19 @@ if (process.env.NODE !== undefined) {
 
 
 
+
+
 var mainWindow;
 var newAssetWindow = null;
 var editAssetWindow = null;
 
 var database = "./data/data.json";
+var outFolder = "./out";
 
 app.on('ready', () => {
     createDatabaseFolders();
+    createExportFolders();
+    createExportFiles();
 
     mainWindow = new BrowserWindow({
         width: 1000,
@@ -108,14 +114,21 @@ const addEditAssetWindow = (asset) => {
 
 
 
-const createDatabaseFolders = () => {
-    if (!fs.existsSync('./data')) {
-        fs.mkdirSync('./data');
-        fs.mkdirSync('./data/assets');
-    }
-    else if (!fs.existsSync('./data/assets')) {
-        fs.mkdirSync('./data/assets');
-    }
+
+
+const createDatabaseFolders = async () => {
+    await dFuncs.createDatabaseFolders();
+}
+
+const createExportFolders = async () => {
+    await eFuncs.createExportFolders();
+}
+
+const createExportFiles = async () => {
+    await eFuncs.createIndexFile(outFolder);
+    await eFuncs.createStyleFile(outFolder);
+    let assets = await dFuncs.getAssets(database);
+    await eFuncs.createAssetsFile(outFolder, assets);
 }
 
 
@@ -125,6 +138,8 @@ ipcMain.on('path:get', async (e) => {
     appPath = process.env.NODE !== undefined ? path.join(appPath, "../") : path.join(appPath, "../../../");
     e.sender.send('path:get', appPath);
 });
+
+
 
 ipcMain.on('asset:get', async (e) => {
     let assets = await dFuncs.getAssets(database);
@@ -139,6 +154,8 @@ ipcMain.on('asset:new', async (e, newAsset) => {
     delete newAsset['assetContent'];
     await mainWindow.webContents.send('asset:new', newAsset);
 
+    createExportFiles();
+
     e.sender.destroy();
 });
 
@@ -152,13 +169,21 @@ ipcMain.on('asset:edit-save', async (e, asset) => {
     delete asset['assetContent'];
     delete asset['assetNamePrevious'];
     mainWindow.webContents.send('asset:edit', asset, response);
+
+    createExportFiles();
+
     e.sender.destroy();
 });
 
 ipcMain.on('asset:delete', async (e, id) => {
     let response = await dFuncs.deleteAsset(database, id);
+
+    createExportFiles();
+
     e.sender.send('asset:delete', id, response);
 });
+
+
 
 
 
