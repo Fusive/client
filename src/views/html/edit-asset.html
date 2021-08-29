@@ -8,22 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <title>Fusive App: New Asset</title>
+    <title>Fusive App: Edit Asset</title>
 </head>
 <body onload="handleLoad()">
     <div id="alert"></div>
-    <div id="asset-type">
-        <h2>Select A File Type</h2>
-        <button class="asset-type-button">VIDEO</button>
-        <button class="asset-type-button">IMAGE/GIF</button>
-        <button class="asset-type-button">AUDIO</button>
-        <button class="asset-type-button">VOICE</button>
-    </div>
-    <div id="return-button">
-        <svg width=40 height=60>
-            <polyline points="25,15 10,30 25,45"/>
-        </svg>
-    </div>
     <form id="asset-form">
         <div id="asset-file">
             <input type="file" id="asset-file-input" accept=".mp4, .jpg, .png, .gif, .mp3" title="Drop a file here">
@@ -67,6 +55,6 @@
         </div>
     </form>
 
-    <script src="../js/new-asset.js"></script>
+    <script src="../js/edit-asset.js"></script>
 </body>
 </html>

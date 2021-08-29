@@ -14,7 +14,8 @@ if (process.env.NODE !== undefined) {
 
 
 var mainWindow;
-var newAssetWindow;
+var newAssetWindow = null;
+var editAssetWindow = null;
 
 var database = "./data/data.json";
 
@@ -44,6 +45,11 @@ app.on('ready', () => {
 
 
 const addNewAssetWindow = () => {
+    if (newAssetWindow !== null) {
+        newAssetWindow.destroy();
+        newAssetWindow = null;
+    }
+
     newAssetWindow = new BrowserWindow({
         width: 850,
         height: 600,
@@ -63,6 +69,40 @@ const addNewAssetWindow = () => {
 
     newAssetWindow.on('closed', () => {
         newAssetWindow = null;
+    });
+}
+
+
+
+const addEditAssetWindow = (asset) => {
+    if (editAssetWindow !== null) {
+        editAssetWindow.destroy();
+        editAssetWindow = null;
+    }
+
+    editAssetWindow = new BrowserWindow({
+        width: 850,
+        height: 600,
+        resizable: false,
+        webPreferences: {
+            devTools: process.env.NODE !== undefined ? true : false,
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+        },
+    });
+    editAssetWindow.loadFile(path.join(__dirname, "views/html/edit-asset.html"));
+
+    // const mainMenu = Menu.buildFromTemplate(templateMainMenu);
+    // editAssetWindow.setMenu(mainMenu);
+    editAssetWindow.setMenu(null);
+
+    editAssetWindow.on('ready-to-show', () => {
+        editAssetWindow.webContents.send('asset:edit', asset);
+    });
+
+    editAssetWindow.on('closed', () => {
+        editAssetWindow = null;
     });
 }
 
@@ -95,14 +135,23 @@ ipcMain.on('asset:new', async (e, newAsset) => {
     newAsset['local'] = true;
     newAsset['id'] = await dFuncs.createId(database);
 
-    if (newAsset['assetName']) {
-        fs.writeFileSync(`./data/assets/${newAsset['id']}.${newAsset['assetName'].substr(newAsset['assetName'].length-3,3)}`, new Buffer.from(newAsset['assetContent']));
-        delete newAsset['assetContent'];
-    }
-
     await dFuncs.addAsset(database, newAsset);
+    delete newAsset['assetContent'];
     await mainWindow.webContents.send('asset:new', newAsset);
 
+    e.sender.destroy();
+});
+
+ipcMain.on('asset:edit-req', async (e, id) => {
+    let asset = await dFuncs.getAssets(database, id);
+    addEditAssetWindow(asset);
+});
+
+ipcMain.on('asset:edit-save', async (e, asset) => {
+    let response = await dFuncs.editAsset(database, asset);
+    delete asset['assetContent'];
+    delete asset['assetNamePrevious'];
+    mainWindow.webContents.send('asset:edit', asset, response);
     e.sender.destroy();
 });
 

@@ -138,22 +138,42 @@ h1 {
 
 
 
-#obs-button {
+#control-buttons {
     position: fixed;
+    display: flex;
+    flex-direction: row;
     right: 1rem;
     bottom: 1rem;
+}
+#control-buttons > * {
     cursor: pointer;
-    background-color: #1dd3b0;
     border: none;
+    margin: 0 0.5rem;
     padding: 1rem 1.5rem;
     font-weight: 700;
     z-index: 1;
     font-size: 1rem;
-    transition: .25s;
+    transition: background-color .25s ease-in-out, color .25s ease-in-out, transform .5s ease-in-out, opacity .5s ease-in-out;
+}
+#save-button {
+    background-color: #ffffff;
+    color: #1dd3b0;
+}
+#save-button:hover {
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+/* #save-button:focus {
+    transform: translate(0, 4.5rem);
+    opacity: 0;
+} */
+#obs-button {
+    background-color: #1dd3b0;
+    color: #ffffff;
 }
 #obs-button:hover {
     background-color: #ffffff;
-    color: #1dd3b0;
+    color: #1a1a1a;
 }
 
 

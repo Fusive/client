@@ -49,7 +49,7 @@ const handleLoad = () => {
         }
         let logs = document.getElementById("asset-file-logs");
         if (assetInput.files.length !== 1) {
-            logs.innerText = "Please select onle one file";
+            logs.innerText = "Please select only one file";
             assetSelectedName = null;
             assetSelectedContent = null;
         }

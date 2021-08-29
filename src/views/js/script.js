@@ -26,13 +26,10 @@ const getAssets = () => {
 }
 
 const addAsset = (asset) => {
-    if (asset['assetPath']) {
-        asset['assetPath'] = asset['assetPath'].replaceAll('\\', '/');
-    }
     let preview;
     if (asset['type'] === "Video") {
         preview = `
-            <video src="${appPath}/data/assets/${asset['id']}.${asset['assetName'].substr(asset['assetName'].length-3,3)}#t=0.5" preload="metadata"></video>
+            <video autoplay loop muted></video>
         `;
     }
     else if (asset['type'] === "Image/Gif") {
@@ -47,7 +44,7 @@ const addAsset = (asset) => {
     }
     else if (asset['type'] === "Voice") {
         preview = `
-            <p>${asset['text']}</p>
+            <p>${asset['text'] !== null ? asset['text'] : "* User Text Enabled *"}</p>
         `;
     }
 
@@ -85,11 +82,22 @@ const addAsset = (asset) => {
             </div>
         `}
         <div class="asset-options">
-            <button class="asset-edit">Edit</button>
-            <button class="asset-delete" onclick="deleteAsset('${asset['id']}')">Delete</button>
+            <button class="asset-edit" onclick="editCurrentAsset('${asset['id']}')">Edit</button>
+            <button class="asset-delete" onclick="deleteCurrentAsset('${asset['id']}')">Delete</button>
         </div>
     </div>
     `;
+
+    if (asset['type'] === "Video") {
+        let file = `${appPath}/data/assets/${asset['id']}.${asset['assetName'].substr(asset['assetName'].length-3,3)}`;
+        fetch(file).then(res => res.blob()).then(blob => {
+            const fileReader = new FileReader();
+            fileReader.onload = e => {
+                document.getElementById(`asset-${asset['id']}`).childNodes[1].childNodes[1].setAttribute('src', e.target.result);
+            };
+            fileReader.readAsDataURL(blob);
+        });
+    }
 
     if (document.getElementsByClassName('asset-container').length > 0) {
         document.getElementById("no-assets").style.display = "none";
@@ -99,7 +107,13 @@ const addAsset = (asset) => {
     }
 }
 
-const deleteAsset = (id) => {
+
+
+const editCurrentAsset = (id) => {
+    ipcRenderer.send('asset:edit-req', id);
+}
+
+const deleteCurrentAsset = (id) => {
     ipcRenderer.send('asset:delete', id);
 }
 
@@ -112,11 +126,16 @@ ipcRenderer.on('asset:get', (e, assets) => {
 });
 
 ipcRenderer.on('asset:new', (e, newAsset) => {
-    addAsset(newAsset);
+    location.reload();
+});
+
+ipcRenderer.on('asset:edit', (e, editedAsset, response) => {
+    if (response) {
+        location.reload();
+    }
 });
 
 ipcRenderer.on('asset:delete', (e, id, response) => {
-    console.log(id);
     if (response) {
         document.getElementById(`asset-${id}`).style.opacity = 0;
         setTimeout(() => {
