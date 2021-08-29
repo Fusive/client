@@ -68,9 +68,7 @@ const eFuncs = {
             fileText += ");\n\n";
         }
 
-        if (fileText !== "") {
-            fs.writeFileSync(path.join(outFolder, "./js/assets.js"), fileText);
-        }
+        fs.writeFileSync(path.join(outFolder, "./js/assets.js"), fileText);
     },
 }
 
