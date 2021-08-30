@@ -13,7 +13,7 @@ const eFuncs = {
 
 
     async createIndexFile(outFolder) {
-        fs.writeFileSync(path.join(outFolder, "./index.html"), `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="UTF-8">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<link rel="stylesheet" href="css/style.css">\n\t<title>Fusive Plugin</title>\n</head>\n<body onload="bodyLoaded()">\n\t<script src="js/config.js"></script>\n\t<script src="https://fusive.github.io/client/plugin/pluginScript.js" crossorigin="anonymous"></script>\n\t<script src="js/assets.js"></script>\n</body>\n</html>`);
+        fs.writeFileSync(path.join(outFolder, "./index.html"), `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="UTF-8">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<link rel="stylesheet" href="css/style.css">\n\t<title>Fusive Plugin</title>\n</head>\n<body onload="bodyLoaded()">\n\t<script src="js/config.js"></script>\n\t<script src="https://fusive.github.io/client/plugin/plugin.js" crossorigin="anonymous"></script>\n\t<script src="js/assets.js"></script>\n</body>\n</html>`);
     },
 
 
@@ -69,6 +69,12 @@ const eFuncs = {
         }
 
         fs.writeFileSync(path.join(outFolder, "./js/assets.js"), fileText);
+    },
+
+
+
+    async createConfigFile(outFolder) {
+        fs.writeFileSync(path.join(outFolder, "./js/config.js"), `authCode = "";\nchannelId = "";\ntwitchUsername = "";\nassetOffset = 750;`);
     },
 }
 

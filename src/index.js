@@ -129,6 +129,7 @@ const createExportFiles = async () => {
     await eFuncs.createStyleFile(outFolder);
     let assets = await dFuncs.getAssets(database);
     await eFuncs.createAssetsFile(outFolder, assets);
+    await eFuncs.createConfigFile(outFolder);
 }
 
 
