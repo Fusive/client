@@ -75,6 +75,18 @@ body {
     color: #1dd3b0;
 }
 
+#content > #obs-tutorial-videos {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+#content > #obs-tutorial-videos > video {
+    width: 15rem;
+    margin: 0.5rem 0.5rem;
+}
+
 
 
 
