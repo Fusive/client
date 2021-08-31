@@ -1,0 +1,113 @@
+body, body * {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', arial;
+    color: #ffffff;
+}
+
+body {
+    background-color: #1a1a1a;
+}
+
+
+
+
+
+#return-button {
+    position: absolute;
+    z-index: 1;
+    top: 1rem;
+    left: 1rem;
+}
+#return-button svg {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 3;
+    cursor: pointer;
+    transition: .25s;
+}
+#return-button svg:hover {
+    transform: scale(1.2);
+    stroke: #1dd3b0;
+}
+
+
+
+#content {
+    margin: 2rem auto;
+    width: 80%;
+}
+#content * {
+    margin-bottom: 1.5rem;
+}
+
+#content > h2 {
+    text-align: center;
+}
+
+#content > #file-url-container {
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+}
+#content > #file-url-container > p {
+    background-color: #0a0a0a;
+    padding: 0.5rem 1rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#content > #file-url-container > button {
+    cursor: pointer;
+    background-color: #1dd3b0;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: .25s;
+}
+#content > #file-url-container > button:hover {
+    background-color: #ffffff;
+    color: #1dd3b0;
+}
+
+
+
+
+
+/* Edit Scrollbar */
+/* Width */
+::-webkit-scrollbar {
+    width: 1rem;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #353535;
+}
+/* Handle On Hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #333333;
+}
+
+
+
+/* Remove Input Outlines */
+input:focus, button:focus, textarea:focus, select:focus {
+    outline: none;
+}
+
+
+
+/* Disable Number Input Arrows */
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
