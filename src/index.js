@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const pjson = require('../package.json');
 
 const gFuncs = require('./functions/general');
 const dFuncs = require('./functions/database');
@@ -129,7 +130,10 @@ const createExportFiles = async () => {
     await eFuncs.createStyleFile(outFolder);
     let assets = await dFuncs.getAssets(database);
     await eFuncs.createAssetsFile(outFolder, assets);
-    await eFuncs.createConfigFile(outFolder);
+    var config = {
+        appVersion: pjson.version,
+    };
+    await eFuncs.createConfigFile(outFolder, config);
 }
 
 

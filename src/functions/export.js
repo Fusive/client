@@ -78,8 +78,8 @@ const eFuncs = {
 
 
 
-    async createConfigFile(outFolder) {
-        fs.writeFileSync(path.join(outFolder, "./js/config.js"), `authCode = "";\nchannelId = "";\ntwitchUsername = "";\nassetOffset = 750;`);
+    async createConfigFile(outFolder, config) {
+        fs.writeFileSync(path.join(outFolder, "./js/config.js"), `var authCode = "";\nvar channelId = "";\nvar twitchUsername = "";\nvar appVersion = "${config['appVersion']}"`);
     },
 }
 
