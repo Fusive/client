@@ -506,9 +506,10 @@ class webSocketControl {
     }
 
     // Class Constructor, Ip Adress And Port Needed
-    constructor(client, version, adress, port, retryIntervalTime=120000) {
+    constructor(client, pluginVersion, appVersion, adress, port, retryIntervalTime=120000) {
         this.client = client;
-        this.version = version;
+        this.pluginVersion = pluginVersion;
+        this.appVersion = appVersion;
         this.adress = adress;
         this.port = port;
         this.currentAdress = 0;
@@ -531,7 +532,7 @@ class webSocketControl {
         this.ws.onopen = () => {
             webSocketControl.socketConnected = true;
             console.log(`[SocketControl]: Web Socket Connected`);
-            this.ws.send(JSON.stringify({type: "SocketControl", content: {type: "Identifier", client: this.client, version: this.version}}));
+            this.ws.send(JSON.stringify({type: "SocketControl", content: {type: "Identifier", client: this.client, pluginVersion: this.pluginVersion, appVersion: this.appVersion}}));
         }
 
         // Message Received Event
