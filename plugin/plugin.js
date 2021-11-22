@@ -396,7 +396,7 @@ class webSocketVideoPlayer {
         audioTag.load();
         audioTag.autoplay = true;
         audioTag.volume = asset.volume;
-        sourceTag.src = (asset.local) ? `../data/assets/${audio.asset}` : asset.asset;
+        sourceTag.src = (asset.local) ? `../data/assets/${asset.asset}` : asset.asset;
         sourceTag.type = "audio/mpeg";
         audioTag.appendChild(sourceTag);
 
