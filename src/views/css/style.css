@@ -25,6 +25,48 @@ h1 {
 
 
 
+#auth-missing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2rem 2.5rem;
+    background-color: #333333;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem 0.5rem #00000050;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    opacity: 0;
+    top: 55%;
+    transition: .25s ease-in-out;
+}
+#auth-missing > h2 {
+    text-align: center;
+    margin: 1rem 0;
+}
+#auth-missing > p {
+    text-align: center;
+    margin: 0.5rem 0;
+}
+#auth-missing > button {
+    cursor: pointer;
+    border: none;
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    font-size: 1rem;
+    background-color: #1dd3b0;
+    color: #ffffff;
+    transition: .25s;
+}
+#auth-missing > button:hover {
+    background-color: #ffffff;
+    color: #1dd3b0;
+}
+
 #no-assets {
     color: #575757;
     align-self: center;

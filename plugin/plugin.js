@@ -101,7 +101,21 @@ class webSocketVideoPlayer {
 
 
     // Socket Events
-    connectSocket() {
+    async connectSocket() {
+        // Check If Token Is Valid
+        let options = {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${this.authCode}`,
+            },
+        };
+        let response = await fetch("https://id.twitch.tv/oauth2/validate", options);
+        const data = await response.json();
+        if (data.status && data.status >= 400) {
+            document.body.innerHTML = `<h1>Auth Token Invalid, Please Regenerate In Fusive App</h1>`;
+            return;
+        }
+
         this.ws = new WebSocket("wss://pubsub-edge.twitch.tv");
 
         // On Connection Event

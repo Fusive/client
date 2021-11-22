@@ -1,6 +1,6 @@
 {
     "name": "fusive-app",
-    "version": "0.6.3",
+    "version": "0.7.0",
     "author": "Jayex Designs",
     "description": "Client's App For Playing Media On Stream",
     "license": "ISC",
@@ -30,5 +30,10 @@
         "directories": {
             "output": "build"
         }
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "electron-fetch": "^1.7.4",
+        "express": "^4.17.1"
     }
 }

@@ -156,6 +156,60 @@ const dFuncs = {
         }
         return false;
     },
+
+
+
+    async getToken(database) {
+        let data = await this.readFromDatabase(database);
+        if (data['token'] === undefined) {
+            data['token'] = "";
+            await this.writeDataToDatabase(database, data);
+        }
+        else return data['token'];
+    },
+
+    async addToken(database, token) {
+        let data = await this.readFromDatabase(database);
+        if (data['token'] === undefined) {
+            data['token'] = "";
+        }
+
+        data['token'] = token;
+        await this.writeDataToDatabase(database, data);
+    },
+
+    async removeToken(database) {
+        let data = await this.readFromDatabase(database);
+        data['token'] = "";
+        await this.writeDataToDatabase(database, data);
+    },
+
+
+
+    async getUserCred(database) {
+        let data = await this.readFromDatabase(database);
+        if (data['clientId'] === undefined) data['clientId'] = "";
+        if (data['twitchUsername'] === undefined) data['twitchUsername'] = "";
+        await this.writeDataToDatabase(database, data);
+        return {"clientId": data["clientId"], "twitchUsername": data["twitchUsername"]};
+    },
+
+    async addUserCred(database, clientId, twitchUsername) {
+        let data = await this.readFromDatabase(database);
+        if (data['clientId'] === undefined) data['clientId'] = "";
+        if (data['twitchUsername'] === undefined) data['twitchUsername'] = "";
+
+        data['clientId'] = clientId;
+        data['twitchUsername'] = twitchUsername;
+        await this.writeDataToDatabase(database, data);
+    },
+
+    async removeUserCred(database) {
+        let data = await this.readFromDatabase(database);
+        data['clientId'] = "";
+        data['twitchUsername'] = "";
+        await this.writeDataToDatabase(database, data);
+    },
 }
 
 module.exports = dFuncs;

@@ -20,6 +20,7 @@ if (process.env.NODE !== undefined) {
 var mainWindow;
 var newAssetWindow = null;
 var editAssetWindow = null;
+var authWindow = null;
 
 var database = "./data/data.json";
 var outFolder = "./out";
@@ -115,6 +116,36 @@ const addEditAssetWindow = (asset) => {
 
 
 
+const addAuthWindow = () => {
+    if (authWindow !== null) {
+        authWindow.destroy();
+        authWindow = null;
+    }
+
+    authWindow = new BrowserWindow({
+        width: 400,
+        height: 500,
+        resizable: false,
+        webPreferences: {
+            devTools: process.env.NODE !== undefined ? true : false,
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+        },
+    });
+    authWindow.loadFile(path.join(__dirname, "views/html/auth.html"));
+
+    // const mainMenu = Menu.buildFromTemplate(templateMainMenu);
+    // authWindow.setMenu(mainMenu);
+    authWindow.setMenu(null);
+
+    authWindow.on('closed', () => {
+        authWindow = null;
+    });
+}
+
+
+
 
 
 const createDatabaseFolders = async () => {
@@ -128,10 +159,17 @@ const createExportFolders = async () => {
 const createExportFiles = async () => {
     await eFuncs.createIndexFile(outFolder);
     await eFuncs.createStyleFile(outFolder);
+
     let assets = await dFuncs.getAssets(database);
     await eFuncs.createAssetsFile(outFolder, assets);
+
+    let token = await dFuncs.getToken(database);
+    let userCred = await dFuncs.getUserCred(database);
     var config = {
-        appVersion: pjson.version,
+        'accessToken': token,
+        'clientId': userCred["clientId"],
+        'twitchUsername': userCred["twitchUsername"],
+        'appVersion': pjson.version,
     };
     await eFuncs.createConfigFile(outFolder, config);
 }
@@ -142,6 +180,43 @@ ipcMain.on('path:get', async (e) => {
     let appPath = __dirname;
     appPath = process.env.NODE !== undefined ? path.join(appPath, "../") : path.join(appPath, "../../../");
     e.sender.send('path:get', appPath);
+});
+
+
+
+ipcMain.on('auth:get', async (e) => {
+    let token = await dFuncs.getToken(database);
+    let data = await gFuncs.twitchValidateToken(token);
+    if (data) {
+        e.sender.send('auth:get', {token, valid: true});
+        await dFuncs.addUserCred(database, data['user_id'], data['login']);
+    }
+    else e.sender.send('auth:get', {token, valid: false});
+
+    await createExportFiles();
+});
+
+ipcMain.on('auth:set', async (e, data) => {
+    await dFuncs.addToken(database, data.token);
+    e.sender.destroy();
+
+    await createExportFiles();
+
+    await mainWindow.webContents.send('auth:set');
+});
+
+const removeToken = async (e) => {
+    await dFuncs.removeToken(database);
+    await dFuncs.removeUserCred(database);
+
+    await createExportFiles();
+
+    await mainWindow.webContents.send('auth:remove');
+};
+ipcMain.on('auth:remove', removeToken);
+
+ipcMain.on('auth:menu', async (e) => {
+    addAuthWindow();
 });
 
 
@@ -159,7 +234,7 @@ ipcMain.on('asset:new', async (e, newAsset) => {
     delete newAsset['assetContent'];
     await mainWindow.webContents.send('asset:new', newAsset);
 
-    createExportFiles();
+    await createExportFiles();
 
     e.sender.destroy();
 });
@@ -175,7 +250,7 @@ ipcMain.on('asset:edit-save', async (e, asset) => {
     delete asset['assetNamePrevious'];
     mainWindow.webContents.send('asset:edit', asset, response);
 
-    createExportFiles();
+    await createExportFiles();
 
     e.sender.destroy();
 });
@@ -183,7 +258,7 @@ ipcMain.on('asset:edit-save', async (e, asset) => {
 ipcMain.on('asset:delete', async (e, id) => {
     let response = await dFuncs.deleteAsset(database, id);
 
-    createExportFiles();
+    await createExportFiles();
 
     e.sender.send('asset:delete', id, response);
 });
@@ -208,6 +283,23 @@ const templateMainMenu = [
                 accelerator: process.platform === 'darwin' ? 'command+Q' : 'Ctrl+Q',
                 click() {
                     app.quit();
+                },
+            },
+        ],
+    },
+    {
+        label: 'Auth',
+        submenu: [
+            {
+                label: 'Authenticate With Twitch',
+                click() {
+                    addAuthWindow();
+                },
+            },
+            {
+                label: 'Remove Twitch Connection',
+                click() {
+                    removeToken();
                 },
             },
         ],

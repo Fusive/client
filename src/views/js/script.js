@@ -4,6 +4,7 @@ const { ipcRenderer } = require('electron');
 
 const handleLoad = () => {
     getPath();
+    getAuth();
     getAssets();
 }
 
@@ -17,6 +18,33 @@ const getPath = () => {
 
 ipcRenderer.on('path:get', (e, path) => {
     appPath = path;
+});
+
+
+
+const getAuth = () => {
+    console.log("sending get");
+    ipcRenderer.send('auth:get');
+};
+
+ipcRenderer.on('auth:get', (e, data) => {
+    console.log("receiving get");
+    if (!data.valid) {
+        document.getElementById("auth-missing").style.opacity = 1;
+        document.getElementById("auth-missing").style.top = "50%";
+    }
+    else if (data.valid) {
+        document.getElementById("auth-missing").style.opacity = 0;
+        document.getElementById("auth-missing").style.top = "55%";
+    };
+});
+
+ipcRenderer.on('auth:remove', (e) => getAuth());
+
+ipcRenderer.on('auth:set', (e) => getAuth());
+
+document.getElementById("auth-button").addEventListener('click', () => {
+    ipcRenderer.send('auth:menu');
 });
 
 

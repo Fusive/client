@@ -4,26 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <title>Fusive App</title>
+    <title>Fusive App: Authenticate</title>
 </head>
 <body onload="handleLoad()">
-    <div id="auth-missing">
-        <h2>Authorization Missing</h2>
-        <p>Please Login With Twitch</p>
-        <button id="auth-button">OPEN AUTH MENU</button>
+    <div id="alert"></div>
+    <div id="auth-container">
+        <h2>Login With Twitch:</h2>
+        <p>Authenticate with twitch to be able to use the application, if you already authorized the app but the plugin gives an error press login again</p>
+        <button id="auth-login">LOGIN</button>
     </div>
-    <h1>Your Assets</h1>
-    <div id="assets-list">
-        <div id="no-assets">You don't have any assets added.<br/>To add one press <kbd>Ctrl</kbd> + <kbd>N</kbd></div>
-    </div>
-    <a href="add-obs.html">
-        <button id="obs-button">ADD TO OBS</button>
-    </a>
 
-    <script src="../js/script.js"></script>
+    <script src="../js/auth.js"></script>
 </body>
 </html>

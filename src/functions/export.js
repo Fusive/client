@@ -19,7 +19,7 @@ const eFuncs = {
 
 
     async createStyleFile(outFolder) {
-        fs.writeFileSync(path.join(outFolder, "./css/style.css"), `body, body * {\n\tmargin: 0;\n\tpadding: 0;\n}\n\nbody {\n\toverflow: hidden;\n}\n\nvideo, img {\n\tposition: absolute;\n\ttop: 50%;\n\tleft: 50%;\n\ttransform: translate(-50%, -50%);\n\twidth: 100vw;\n\theight: 100vh;\n}\n\nimg {\n\tobject-fit: contain;\n}`);
+        fs.writeFileSync(path.join(outFolder, "./css/style.css"), `body, body * {\n\tmargin: 0;\n\tpadding: 0;\n}\n\nbody {\n\toverflow: hidden;\n}\n\nvideo, img, h1 {\n\tposition: absolute;\n\ttop: 50%;\n\tleft: 50%;\n\ttransform: translate(-50%, -50%);\n\twidth: 100vw;\n\theight: 100vh;\n}\n\nimg {\n\tobject-fit: contain;\n}`);
     },
 
 
@@ -79,7 +79,7 @@ const eFuncs = {
 
 
     async createConfigFile(outFolder, config) {
-        fs.writeFileSync(path.join(outFolder, "./js/config.js"), `var authCode = "";\nvar channelId = "";\nvar twitchUsername = "";\nvar appVersion = "${config['appVersion']}"`);
+        fs.writeFileSync(path.join(outFolder, "./js/config.js"), `var authCode = '${config['accessToken']}';\nvar channelId = '${config['clientId']}';\nvar twitchUsername = '${config['twitchUsername']}';\nvar appVersion = '${config['appVersion']}'`);
     },
 }
 
