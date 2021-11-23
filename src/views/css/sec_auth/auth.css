@@ -55,14 +55,14 @@ body {
     transition: .25s;
 }
 #auth-container > h2 {
-    margin: 2.5rem 0;
+    margin: 0;
 }
 #auth-container > p {
     text-align: center;
-    margin: 2rem 1rem
+    margin: 2.25rem 3rem;
 }
 #auth-container > button {
-    margin: 0.85rem 0;
+    margin: 0;
     border: none;
     font-size: 1rem;
     font-weight: 600;
@@ -73,9 +73,14 @@ body {
     width: 18%;
     min-width: 8rem;
 }
-#auth-container > button:hover {
+#auth-container > button:enabled:hover {
     color: #1dd3b0;
     background-color: #ffffff;
+}
+#auth-container > button:disabled, #auth-container > button[disabled] {
+    color: #aaaaaa;
+    background-color: #333333;
+    cursor: default;
 }
 
 

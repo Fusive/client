@@ -10,7 +10,7 @@ const handleLoad = () => {
         app.use(cors());
 
         app.get('/', (req, res) => {
-            res.sendFile(path.join(__dirname, '../html/auth/index.html'));
+            res.sendFile(path.join(__dirname, '../../html/sec_auth/public/index.html'));
         });
         app.post('/', (req, res) => {
             if (req.query.token) {
@@ -23,9 +23,14 @@ const handleLoad = () => {
             }
         });
 
-        app.listen(PORT, () => {});
+        app.listen(PORT, () => {}).on('error', err => {
+            document.getElementById("auth-login").disabled = true;
+            if (err.message === "listen EADDRINUSE: address already in use :::80") showAlert("Port 80 Already In Use, Please Close Conflict Apps");
+            else showAlert(err.message);
+        });
     }
     catch (err) {
+        document.getElementById("auth-login").disabled = true;
         showAlert(err.message);
     }
 

@@ -1,9 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
+// General Functions
 const gFuncs = require('./general');
 
 const dFuncs = {
+    // Create The Folders In Charge Of Handling The Data
     async createDatabaseFolders() {
         if (!fs.existsSync('./data')) {
             fs.mkdirSync('./data');
@@ -14,10 +16,12 @@ const dFuncs = {
         }
     },
 
+    // Create The Main Database File
     async createDatabase(database) {
         fs.writeFileSync(database, "{}");
     },
 
+    // Get All Data From The Database
     async readFromDatabase(database) {
         let rawData;
         let data;
@@ -32,6 +36,7 @@ const dFuncs = {
         }
     },
 
+    // Writes Data To The Database File
     async writeDataToDatabase(database, data) {
         if (typeof(data) !== "string") {
             data = JSON.stringify(data);
@@ -39,12 +44,14 @@ const dFuncs = {
         fs.writeFileSync(database, data);
     },
 
+    // Creates A Asset File
     async createFile(database, assetId, assetName, assetContent) {
         let fileName = `${assetId}.${assetName.substr(assetName.length-3,3)}`;
         let filePath = path.join(database, "../", `./assets/${fileName}`);
         fs.writeFileSync(filePath, new Buffer.from(assetContent));
     },
 
+    // Deletes A Asset File
     async deleteFile(database, assetId, assetName) {
         let fileName = `${assetId}.${assetName.substr(assetName.length-3,3)}`;
         let filePath = path.join(database, "../", `./assets/${fileName}`);
@@ -55,6 +62,7 @@ const dFuncs = {
 
 
 
+    // Creates A Unique ID For An Asset
     async createId(database) {
         let id = "";
         let data = await this.readFromDatabase(database);
@@ -77,6 +85,7 @@ const dFuncs = {
         return id;
     },
 
+    // Gets A List Of All The Assets
     async getAssets(database, id=null) {
         let data = await this.readFromDatabase(database);
         if (data['assets'] === undefined) {
@@ -95,6 +104,7 @@ const dFuncs = {
         }
     },
 
+    // Adds An Asset To The Files Folder And The Database File
     async addAsset(database, asset) {
         let data = await this.readFromDatabase(database);
         if (data['assets'] === undefined) {
@@ -110,6 +120,7 @@ const dFuncs = {
         await this.writeDataToDatabase(database, data);
     },
 
+    // Edits A Asset Data In The Files Folder And In The Database File
     async editAsset(database, asset) {
         let data = await this.readFromDatabase(database);
 
@@ -139,6 +150,7 @@ const dFuncs = {
         return deleted;
     },
 
+    // Deletes A Asset Selecting It By Its ID
     async deleteAsset(database, id) {
         let data = await this.readFromDatabase(database);
         if (data['assets'] !== undefined) {
@@ -159,6 +171,7 @@ const dFuncs = {
 
 
 
+    // Gets The Actual Auth Token Saved In The Database File
     async getToken(database) {
         let data = await this.readFromDatabase(database);
         if (data['token'] === undefined) {
@@ -168,6 +181,7 @@ const dFuncs = {
         else return data['token'];
     },
 
+    // Adds Or Replaces The Auth Token In The Database File
     async addToken(database, token) {
         let data = await this.readFromDatabase(database);
         if (data['token'] === undefined) {
@@ -178,6 +192,7 @@ const dFuncs = {
         await this.writeDataToDatabase(database, data);
     },
 
+    // Removes The Auth Token In The Database File
     async removeToken(database) {
         let data = await this.readFromDatabase(database);
         data['token'] = "";
@@ -186,6 +201,7 @@ const dFuncs = {
 
 
 
+    // Gets The User Information Stored In The Database File
     async getUserCred(database) {
         let data = await this.readFromDatabase(database);
         if (data['clientId'] === undefined) data['clientId'] = "";
@@ -194,6 +210,7 @@ const dFuncs = {
         return {"clientId": data["clientId"], "twitchUsername": data["twitchUsername"]};
     },
 
+    // Adds User Information To The Database File
     async addUserCred(database, clientId, twitchUsername) {
         let data = await this.readFromDatabase(database);
         if (data['clientId'] === undefined) data['clientId'] = "";
@@ -204,6 +221,7 @@ const dFuncs = {
         await this.writeDataToDatabase(database, data);
     },
 
+    // Removes The User Information In The Database File
     async removeUserCred(database) {
         let data = await this.readFromDatabase(database);
         data['clientId'] = "";

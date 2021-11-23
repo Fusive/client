@@ -3,8 +3,11 @@ const path = require('path');
 const fs = require('fs');
 const pjson = require('../package.json');
 
+// General Functions
 const gFuncs = require('./functions/general');
+// Database Communication Functions
 const dFuncs = require('./functions/database');
+// Export Plugin Functions
 const eFuncs = require('./functions/export');
 
 if (process.env.NODE !== undefined) {
@@ -17,14 +20,17 @@ if (process.env.NODE !== undefined) {
 
 
 
+// All Window Declarations
 var mainWindow;
 var newAssetWindow = null;
 var editAssetWindow = null;
 var authWindow = null;
 
+// JSON Database And Export Paths
 var database = "./data/data.json";
 var outFolder = "./out";
 
+// App Setup And Main Window Creation
 app.on('ready', () => {
     createDatabaseFolders();
     createExportFolders();
@@ -52,6 +58,7 @@ app.on('ready', () => {
 
 
 
+// Window In Charge Of Creating The Data Of A Single Asset
 const addNewAssetWindow = () => {
     if (newAssetWindow !== null) {
         newAssetWindow.destroy();
@@ -69,7 +76,7 @@ const addNewAssetWindow = () => {
             enableRemoteModule: true,
         },
     });
-    newAssetWindow.loadFile(path.join(__dirname, "views/html/new-asset.html"));
+    newAssetWindow.loadFile(path.join(__dirname, "views/html/sec_asset/new-asset.html"));
 
     // const mainMenu = Menu.buildFromTemplate(templateMainMenu);
     // newAssetWindow.setMenu(mainMenu);
@@ -82,6 +89,7 @@ const addNewAssetWindow = () => {
 
 
 
+// Window In Charge Of Editing The Data Of A Single Asset
 const addEditAssetWindow = (asset) => {
     if (editAssetWindow !== null) {
         editAssetWindow.destroy();
@@ -99,7 +107,7 @@ const addEditAssetWindow = (asset) => {
             enableRemoteModule: true,
         },
     });
-    editAssetWindow.loadFile(path.join(__dirname, "views/html/edit-asset.html"));
+    editAssetWindow.loadFile(path.join(__dirname, "views/html/sec_asset/edit-asset.html"));
 
     // const mainMenu = Menu.buildFromTemplate(templateMainMenu);
     // editAssetWindow.setMenu(mainMenu);
@@ -116,6 +124,7 @@ const addEditAssetWindow = (asset) => {
 
 
 
+// Window In Charge Of Handling The Twitch Authentication
 const addAuthWindow = () => {
     if (authWindow !== null) {
         authWindow.destroy();
@@ -133,11 +142,11 @@ const addAuthWindow = () => {
             enableRemoteModule: true,
         },
     });
-    authWindow.loadFile(path.join(__dirname, "views/html/auth.html"));
+    authWindow.loadFile(path.join(__dirname, "views/html/sec_auth/auth.html"));
 
-    // const mainMenu = Menu.buildFromTemplate(templateMainMenu);
-    // authWindow.setMenu(mainMenu);
-    authWindow.setMenu(null);
+    const mainMenu = Menu.buildFromTemplate(templateMainMenu);
+    authWindow.setMenu(mainMenu);
+    // authWindow.setMenu(null);
 
     authWindow.on('closed', () => {
         authWindow = null;
@@ -148,6 +157,7 @@ const addAuthWindow = () => {
 
 
 
+// Database Functions And Window Cummunication Events
 const createDatabaseFolders = async () => {
     await dFuncs.createDatabaseFolders();
 }
@@ -267,6 +277,7 @@ ipcMain.on('asset:delete', async (e, id) => {
 
 
 
+// Menu Templates
 const templateMainMenu = [
     {
         label: 'File',
