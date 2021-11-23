@@ -13,13 +13,13 @@ const eFuncs = {
 
 
     async createIndexFile(outFolder) {
-        fs.writeFileSync(path.join(outFolder, "./index.html"), `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="UTF-8">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<link rel="stylesheet" href="css/style.css">\n\t<title>Fusive Plugin</title>\n</head>\n<body onload="bodyLoaded()">\n\t<script src="js/config.js"></script>\n\t<script src="https://fusive.github.io/client/plugin/plugin.js" crossorigin="anonymous"></script>\n\t<script src="js/assets.js"></script>\n</body>\n</html>`);
+        fs.writeFileSync(path.join(outFolder, "./index.html"), `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="UTF-8">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<link rel="stylesheet" href="css/style.css">\n\t<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">\n\t<title>Fusive Plugin</title>\n</head>\n<body onload="bodyLoaded()">\n\t<script src="js/config.js"></script>\n\t<script src="https://fusive.github.io/client/plugin/plugin.js" crossorigin="anonymous"></script>\n\t<script src="js/assets.js"></script>\n</body>\n</html>`);
     },
 
 
 
     async createStyleFile(outFolder) {
-        fs.writeFileSync(path.join(outFolder, "./css/style.css"), `body, body * {\n\tmargin: 0;\n\tpadding: 0;\n}\n\nbody {\n\toverflow: hidden;\n}\n\nvideo, img, h1 {\n\tposition: absolute;\n\ttop: 50%;\n\tleft: 50%;\n\ttransform: translate(-50%, -50%);\n\twidth: 100vw;\n\theight: 100vh;\n}\n\nimg {\n\tobject-fit: contain;\n}`);
+        fs.writeFileSync(path.join(outFolder, "./css/style.css"), `body, body * {\n\tmargin: 0;\n\tpadding: 0;\n\tfont-family: 'Montserrat', arial;\n}\n\nbody {\n\toverflow: hidden;\n}\n\nvideo, img {\n\tposition: absolute;\n\ttop: 50%;\n\tleft: 50%;\n\ttransform: translate(-50%, -50%);\n\twidth: 100vw;\n\theight: 100vh;\n}\n\nimg {\n\tobject-fit: contain;\n}\n\nh1 {\n\tposition: absolute;\n\ttop: 50%;\n\tleft: 50%;\n\ttransform: translate(-50%, -50%);\n}\n\n#auth-invalid {\n\tcolor: #ff0000;\n}`);
     },
 
 

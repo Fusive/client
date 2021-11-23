@@ -100,7 +100,12 @@ const handleLoad = () => {
                     assetSelectedName = null;
                     assetSelectedContent = null;
                 }
-                if (asset['type'] === "VIDEO" && !['.mp4'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
+                if (assetInput.files[0].size > 100*1024*1024) {
+                    logs.innerText = "Max file size: 100mb";
+                    assetSelectedName = null;
+                    assetSelectedContent = null;
+                }
+                else if (asset['type'] === "VIDEO" && !['.mp4'].includes(assetInput.files[0].name.substr(assetInput.files[0].name.length-4, 4))) {
                     logs.innerText = "Please select a valid file, possible files types are: .mp4";
                     assetSelectedName = null;
                     assetSelectedContent = null;

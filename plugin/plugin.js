@@ -112,7 +112,7 @@ class webSocketVideoPlayer {
         let response = await fetch("https://id.twitch.tv/oauth2/validate", options);
         const data = await response.json();
         if (data.status && data.status >= 400) {
-            document.body.innerHTML = `<h1>Auth Token Invalid, Please Regenerate In Fusive App</h1>`;
+            document.body.innerHTML = `<h1 id="auth-invalid">Auth Token Invalid, Please Regenerate In Fusive App</h1>`;
             return;
         }
 
