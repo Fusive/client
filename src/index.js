@@ -144,9 +144,9 @@ const addAuthWindow = () => {
     });
     authWindow.loadFile(path.join(__dirname, "views/html/sec_auth/auth.html"));
 
-    const mainMenu = Menu.buildFromTemplate(templateMainMenu);
-    authWindow.setMenu(mainMenu);
-    // authWindow.setMenu(null);
+    // const mainMenu = Menu.buildFromTemplate(templateMainMenu);
+    // authWindow.setMenu(mainMenu);
+    authWindow.setMenu(null);
 
     authWindow.on('closed', () => {
         authWindow = null;
