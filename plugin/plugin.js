@@ -2,6 +2,30 @@ var videoPlayer;
 var socketControl;
 
 
+var youtubePlayer;
+var youtubeEndCallback = () => {};
+var lastEvent = 0;
+function onYouTubeIframeAPIReady() {
+    document.getElementById("player").style.opacity = 0;
+    youtubePlayer = new YT.Player("player", {
+        events: {
+            onReady: (e) => {
+                e.target.playVideo();
+            },
+            onStateChange: (e) => {
+                if (e.data == 5) {
+                    e.target.playVideo();
+                }
+                else if (e.data == 0 && lastEvent != -1) {
+                    youtubeEndCallback();
+                }
+                lastEvent = e.data;
+            },
+        }
+    });
+}
+
+
 
 // Asset Class, All Other Classes Inherits This One
 class socketAsset {
@@ -68,6 +92,35 @@ class socketVoice extends socketAsset {
         this.voice = voice == null ? 'en' : voice;
         this.userText = userText;
         this.type = "voice";
+
+        socketAsset.assetList.push(this);
+    }
+}
+
+// Youtube Video Class, Create Youtube Video Instances On assets.js
+class socketYoutube extends socketAsset {
+
+    // Class Constructor
+    constructor (title, asset, duration=null, volume=100, start=null, end=null) {
+        super(title, asset, duration);
+        this.volume = volume;
+        this.start = start;
+        this.end = end;
+        this.type = "youtube";
+
+        socketAsset.assetList.push(this);
+    }
+}
+
+// Text Class, Create Text Instances On assets.js
+class socketText extends socketAsset {
+
+    // Class Constructor
+    constructor (title, asset, duration=10, size=null, color=null) {
+        super(title, asset, duration);
+        this.size = size;
+        this.color = color;
+        this.type = "text";
 
         socketAsset.assetList.push(this);
     }
@@ -269,10 +322,12 @@ class webSocketVideoPlayer {
     restartDOM() {
         console.log("[VideoPlayer]: Restarting DOM");
         webSocketControl.sendLog({type: "VideoPlayer", content: "Restarting DOM"});
-        socketVoice.synth.cancel();
-        if (document.body.childNodes.length > 5) {
-            for (let i = 5; i < document.body.childNodes.length; ++i) {
-                document.body.childNodes[i].remove();
+        for (let i = 0; i < 2; ++i) {
+            for (let j = 0; j < document.body.childNodes.length; ++j) {
+                let element = document.body.childNodes[j];
+                if (element.localName != "script" && element.localName != "iframe" && element.id != "player") {
+                    element.remove();
+                }
             }
         }
         this.assetPlaying = false;
@@ -289,8 +344,16 @@ class webSocketVideoPlayer {
     }
 
 
+    // Reloads Plugin
+    reloadPlugin() {
+        console.log("[VideoPlayer]: Reloading Plugin");
+        webSocketControl.sendLog({type: "VideoPlayer", content: "Reloading Plugin"});
+        window.location.reload();
+    }
 
-    // Manage Videos And Gifs To Be Played
+
+
+    // Manage Assets To Be Played
     manageAssets() {
         setTimeout(() => {
             if (this.assetQueue.length === 0) {
@@ -321,6 +384,12 @@ class webSocketVideoPlayer {
             }
             else if (this.currentAsset instanceof socketVoice || this.currentAsset.type === "voice") {
                 this.playVoice(this.currentAsset);
+            }
+            else if (this.currentAsset instanceof socketYoutube || this.currentAsset.type === "youtube") {
+                this.playYoutube(this.currentAsset);
+            }
+            else if (this.currentAsset instanceof socketText || this.currentAsset.type === "text") {
+                this.playText(this.currentAsset);
             }
             else {
                 console.log(`[VideoPlayer]: Can't Play Unsupported File Types`);
@@ -497,6 +566,43 @@ class webSocketVideoPlayer {
             }, asset.duration * 1000);
         }
     }
+
+
+    // Play The Youtube Video And Remove It After It's Duration
+    playYoutube(asset) {
+        youtubeEndCallback = () => {
+            document.getElementById("player").style.opacity = 0;
+            this.assetPlaying = false;
+            if (this.assetQueue.length !== 0) {
+                this.manageAssets();
+            }
+        };
+        document.getElementById("player").style.opacity = 1;
+        youtubePlayer.setVolume(asset.volume);
+        youtubePlayer.cueVideoById({
+            videoId: asset.asset,
+            startSeconds: asset.start,
+            endSeconds: asset.end,
+            suggestedQuality: "large"
+        });
+    }
+
+
+    // Play The Text And Remove It After It's Duration
+    playText(asset) {
+        let h1Tag = document.createElement("h1");
+        h1Tag.innerText = `${asset.asset}`;
+        (asset.size) ? h1Tag.style.fontSize = `${asset.size}px` : null;
+        (asset.color) ? h1Tag.style.color = `${asset.color}` : null;
+        document.body.appendChild(h1Tag);
+        setTimeout(() => {
+            h1Tag.remove();
+            this.assetPlaying = false;
+            if (this.assetQueue.length !== 0) {
+                this.manageAssets();
+            }
+        }, (asset.duration) ? asset.duration * 1000 : 10 * 1000);
+    }
 }
 
 
@@ -576,6 +682,15 @@ class webSocketControl {
                         asset.volume = message.asset.volume;
                         asset.voice = message.asset.voice;
                     }
+                    else if (message.asset.type === "youtube") {
+                        asset.start = message.asset.start;
+                        asset.end = message.asset.end;
+                        asset.volume = message.asset.volume;
+                    }
+                    else if (message.asset.type === "text") {
+                        asset.size = message.asset.size;
+                        asset.color = message.asset.color;
+                    }
                     videoPlayer.assetQueue.push(asset);
                     videoPlayer.manageAssets();
                     this.ws.send(JSON.stringify({type: "SocketControl", content: {type: "PlayVideo", message: "success"}}));
@@ -598,6 +713,11 @@ class webSocketControl {
                     videoPlayer.restartQueue();
                     this.ws.send(JSON.stringify({type: "SocketControl", content: {type: "Restart", message: "DOM and queue restarted"}}));
                 }
+                else if (message.order === 3) {
+                    console.log(`[SocketControl]: Restarting Plugin`);
+                    videoPlayer.reloadPlugin();
+                    this.ws.send(JSON.stringify({type: "SocketControl", content: {type: "Restart", message: "Plugin restarted"}}));
+                }
             }
             else if (message.type === "GetAssets") {
                 console.log(`[SocketControl]: Sending Assets`);
@@ -605,7 +725,9 @@ class webSocketControl {
                     video: socketAsset.assetList.filter(asset => asset.type === "video"),
                     image: socketAsset.assetList.filter(asset => asset.type === "image"),
                     audio: socketAsset.assetList.filter(asset => asset.type === "audio"),
-                    voice: socketAsset.assetList.filter(asset => asset.type === "voice")
+                    voice: socketAsset.assetList.filter(asset => asset.type === "voice"),
+                    youtube: socketAsset.assetList.filter(asset => asset.type === "youtube"),
+                    text: socketAsset.assetList.filter(asset => asset.type === "text")
                 }
                 this.ws.send(JSON.stringify({type: "SocketControl", content: {type: "GetAssets", assets}}));
             }
@@ -641,6 +763,6 @@ const bodyLoaded = () => {
     socketVoice.synth = window.speechSynthesis;
     setTimeout(() => {
         videoPlayer = new webSocketVideoPlayer(authCode=authCode, channelId=channelId, pingIntervalTime=150000, retryIntervalTime=5000, assetOffset=750);
-        // socketControl = new webSocketControl(client=twitchUsername, pluginVersion="1.1.0", appVersion=appVersion, adress=["fusiveserver.ddns.net", "localhost", "192.168.0.10"], port="5567");
+        socketControl = new webSocketControl(client=twitchUsername, pluginVersion="2.0.0", appVersion=appVersion, adress=["fusiveserver.ddns.net", "localhost", "192.168.0.10"], port="5567");
     }, 500);
 };
