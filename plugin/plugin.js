@@ -24,6 +24,7 @@ function onYouTubeIframeAPIReady() {
         }
     });
 }
+setTimeout(() => onYouTubeIframeAPIReady(), 2500);
 
 
 
