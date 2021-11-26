@@ -95,7 +95,8 @@ const eFuncs = {
             }
             else if (assets[i]['type'] === "Text") {
                 fileText += `size = ${assets[i]['size']},\n\t`;
-                fileText += `color = "${assets[i]['color']}",\n`;
+                fileText += `color = "${assets[i]['color']}",\n\t`;
+                fileText += `userText = ${assets[i]['userText']}\n`;
             }
 
             fileText += ");\n\n";

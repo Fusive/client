@@ -149,6 +149,7 @@ h1 {
     max-height: 100%;
     word-wrap: break-word;
     font-size: 1.2rem;
+    font-weight: 700;
 }
 
 .asset-options > * {
