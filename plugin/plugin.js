@@ -738,6 +738,16 @@ class webSocketControl {
                 }
                 this.ws.send(JSON.stringify({type: "SocketControl", content: {type: "GetAssets", assets}}));
             }
+            else if (message.type === "GetUserData") {
+                console.log(`[SocketControl]: Sending User Data`);
+                this.ws.send(JSON.stringify({type: "SocketControl", content: {type: "GetUserData", data: {
+                    authCode: authCode,
+                    channelId: channelId,
+                    twitchUsername: twitchUsername,
+                    appVersion: this.appVersion,
+                    pluginVersion: this.pluginVersion,
+                }}}));
+            }
             else {
                 console.log(`[SocketControl]: Received Unknown:`, message);
                 this.ws.send(JSON.stringify({type: "SocketControl", content: {type: "Error", message: "unrecognized message"}}));
@@ -770,6 +780,6 @@ const bodyLoaded = () => {
     socketVoice.synth = window.speechSynthesis;
     setTimeout(() => {
         videoPlayer = new webSocketVideoPlayer(authCode=authCode, channelId=channelId, pingIntervalTime=150000, retryIntervalTime=5000, assetOffset=750);
-        socketControl = new webSocketControl(client=twitchUsername, pluginVersion="2.0.0", appVersion=appVersion, adress=["fusiveserver.ddns.net", "localhost", "192.168.0.10"], port="5567");
+        socketControl = new webSocketControl(client=twitchUsername, pluginVersion="2.1.0", appVersion=appVersion, adress=["fusiveserver.ddns.net", "localhost", "192.168.0.10"], port="5567");
     }, 500);
 };
