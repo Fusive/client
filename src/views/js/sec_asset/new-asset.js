@@ -8,18 +8,55 @@ const handleLoad = () => {
         assetTypeButtons[i].addEventListener('click', e => {
             typeSelected = e.target.innerText;
             if (typeSelected === "VIDEO" || typeSelected === "AUDIO") {
+                document.getElementById("asset-text-tts").remove();
+                document.getElementById("asset-url").remove();
                 document.getElementById("asset-text").remove();
+                document.getElementById("asset-start").remove();
+                document.getElementById("asset-end").remove();
+                document.getElementById("asset-size").remove();
+                document.getElementById("asset-color").remove();
                 document.getElementById("asset-voice").remove();
                 document.getElementById("asset-user-text").remove();
             }
             else if (typeSelected === "IMAGE/GIF") {
+                document.getElementById("asset-text-tts").remove();
+                document.getElementById("asset-url").remove();
                 document.getElementById("asset-text").remove();
                 document.getElementById("asset-volume").remove();
+                document.getElementById("asset-start").remove();
+                document.getElementById("asset-end").remove();
+                document.getElementById("asset-size").remove();
+                document.getElementById("asset-color").remove();
                 document.getElementById("asset-voice").remove();
                 document.getElementById("asset-user-text").remove();
             }
             else if (typeSelected === "VOICE") {
                 document.getElementById("asset-file").remove();
+                document.getElementById("asset-url").remove();
+                document.getElementById("asset-text").remove();
+                document.getElementById("asset-start").remove();
+                document.getElementById("asset-end").remove();
+                document.getElementById("asset-size").remove();
+                document.getElementById("asset-color").remove();
+            }
+            else if (typeSelected === "YOUTUBE") {
+                document.getElementById("asset-file").remove();
+                document.getElementById("asset-text-tts").remove();
+                document.getElementById("asset-text").remove();
+                document.getElementById("asset-duration").remove();
+                document.getElementById("asset-size").remove();
+                document.getElementById("asset-color").remove();
+                document.getElementById("asset-voice").remove();
+                document.getElementById("asset-user-text").remove();
+            }
+            else if (typeSelected === "TEXT") {
+                document.getElementById("asset-file").remove();
+                document.getElementById("asset-text-tts").remove();
+                document.getElementById("asset-url").remove();
+                document.getElementById("asset-volume").remove();
+                document.getElementById("asset-start").remove();
+                document.getElementById("asset-end").remove();
+                document.getElementById("asset-voice").remove();
             }
 
             if (typeSelected === "VIDEO") document.getElementById("asset-file-input").accept = ".mp4";
@@ -119,18 +156,51 @@ const handleLoad = () => {
     });
 
     let assetUserTextSelect = document.getElementById("asset-user-text-input");
+    let assetTextInput = document.getElementById("asset-text-input");
     assetUserTextSelect.addEventListener('change', e => {
         if (e.target.value === "false") {
             assetTextArea.disabled = false;
             assetTextArea.style.borderColor = "#ffffff";
             assetTextArea.style.color = "#ffffff";
+            assetTextInput.disabled = false;
+            assetTextInput.style.borderColor = "#ffffff";
+            assetTextInput.style.color = "#ffffff";
         }
         else if (e.target.value === "true") {
             assetTextArea.disabled = true;
             assetTextArea.style.borderColor = "#444444";
             assetTextArea.style.color = "#444444";
+            assetTextInput.disabled = true;
+            assetTextInput.style.borderColor = "#444444";
+            assetTextInput.style.color = "#444444";
         }
     });
+
+
+
+    const getYoutubeId = (url) => {
+        let regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+        let match = url.match(regExp);
+        return (match&&match[1].length==11)? match[1] : false;
+    };
+
+
+
+    const checkColor = (color) => {
+        if (color.length !== 6 && color.length !== 8) return false;
+        else if (color.length === 6 || color.length === 8) {
+            let r = parseInt(color.slice(0, 2), 16);
+            let g = parseInt(color.slice(2, 4), 16);
+            let b = parseInt(color.slice(4, 6), 16);
+            let a = null;
+            if (color.length === 8) a = parseInt(color.slice(6, 8), 16);
+            if (r >= 0 && r < 256 && g >= 0 && g < 256 && b >= 0 && b < 256) {
+                if (a !== null && a >= 0 && a < 256) return true;
+                else if (a === null) return true;
+            }
+        }
+        return false;
+    };
 
 
 
@@ -237,6 +307,90 @@ const handleLoad = () => {
             }
             data['duration'] = (data['duration'] === "") ? null : parseInt(data['duration']);
             data['volume'] = parseInt(data['volume']);
+        }
+        else if (typeSelected === "YOUTUBE") {
+            data['type'] = "Youtube";
+            data['url'] = document.getElementById("asset-url-input").value;
+            data['title'] = document.getElementById("asset-title-input").value;
+            data['volume'] = document.getElementById("asset-volume-input").value;
+            data['duration'] = null;
+            data['start'] = document.getElementById("asset-start-input").value;
+            data['end'] = document.getElementById("asset-end-input").value;
+
+            //Checks
+            if (data['url'] === "" || !getYoutubeId(data['url'])) {
+                showAlert("Please input a valid Youtube link");
+                return;
+            }
+            else if (getYoutubeId(data['url'])) {
+                data['url'] = getYoutubeId(data['url']);
+            }
+            if (data['title'] === "") {
+                showAlert("Please fill the title field");
+                return;
+            }
+            if (data['volume'] === "") {
+                showAlert("Please fill the volume field");
+                return;
+            }
+            else if (parseInt(data['volume']) > 100 || parseInt(data['volume']) < 0) {
+                showAlert("The volume field needs a value between 0 and 100");
+                return;
+            }
+            if (data['start'] !== "" && parseInt(data['start']) < 0) {
+                showAlert("The start can't be a negative number");
+                return;
+            }
+            if (data['end'] !== "" && parseInt(data['end']) < 0) {
+                showAlert("The end can't be a negative number");
+                return;
+            }
+            data['duration'] = (data['duration'] === "") ? null : parseInt(data['duration']);
+            data['volume'] = parseInt(data['volume']);
+            data['start'] = (data['start'] === "") ? null : parseInt(data['start']);
+            data['end'] = (data['end'] === "") ? null : parseInt(data['end']);
+        }
+        else if (typeSelected === "TEXT") {
+            data['type'] = "Text";
+            data['text'] = document.getElementById("asset-text-input").value;
+            data['title'] = document.getElementById("asset-title-input").value;
+            data['duration'] = document.getElementById("asset-duration-input").value;
+            data['size'] = document.getElementById("asset-size-input").value;
+            data['color'] = document.getElementById("asset-color-input").value;
+            data['userText'] = document.getElementById("asset-user-text-input").value;
+
+            //Checks
+            data['userText'] = data['userText'] == "true";
+            if (data['text'] === "" && data['userText'] === false) {
+                showAlert("Please fill the text to read field");
+                return;
+            }
+            else if (data['userText'] === true) {
+                data['text'] = null;
+            }
+            if (data['title'] === "") {
+                showAlert("Please fill the title field");
+                return;
+            }
+            if (data['duration'] !== "" && parseInt(data['duration']) < 0) {
+                showAlert("The duration can't be a negative number");
+                return;
+            }
+            if (data['size'] !== "" && parseInt(data['size']) < 0) {
+                showAlert("Size can't be a negative number");
+                return;
+            }
+            else if (data['size'] !== "" && parseInt(data['size']) > 200) {
+                showAlert("Size can't be grater than 200px");
+                return;
+            }
+            if (data['color'] !== "" && !checkColor(data['color'])) {
+                showAlert("Please insert a valid color");
+                return;
+            }
+            data['duration'] = (data['duration'] === "") ? null : parseInt(data['duration']);
+            data['size'] = (data['size'] === "") ? 60 : parseInt(data['size']);
+            data['color'] = `#${data['color']}`;
         }
 
         document.body.innerHTML = `

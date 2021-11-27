@@ -2,17 +2,18 @@ var videoPlayer;
 var socketControl;
 
 
-var youtubePlayer;
+var youtubePlayer = null;
 var youtubeEndCallback = () => {};
 var lastEvent = 0;
 function onYouTubeIframeAPIReady() {
     document.getElementById("player").style.opacity = 0;
     youtubePlayer = new YT.Player("player", {
+        videoId: "K4TOrB7at0Y",
         events: {
-            onReady: (e) => {
+            "onReady": (e) => {
                 e.target.playVideo();
             },
-            onStateChange: (e) => {
+            "onStateChange": (e) => {
                 if (e.data == 5) {
                     e.target.playVideo();
                 }
@@ -21,10 +22,15 @@ function onYouTubeIframeAPIReady() {
                 }
                 lastEvent = e.data;
             },
+            "onError": (e) => youtubeEndCallback(),
         }
     });
 }
-setTimeout(() => onYouTubeIframeAPIReady(), 2500);
+setTimeout(() => {
+    if (youtubePlayer === null) {
+        onYouTubeIframeAPIReady();
+    }
+}, 2500);
 
 
 
@@ -580,7 +586,7 @@ class webSocketVideoPlayer {
         };
         document.getElementById("player").style.opacity = 1;
         youtubePlayer.setVolume(asset.volume);
-        youtubePlayer.cueVideoById({
+        youtubePlayer.loadVideoById({
             videoId: asset.asset,
             startSeconds: asset.start,
             endSeconds: asset.end,

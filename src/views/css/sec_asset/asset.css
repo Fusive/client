@@ -124,10 +124,10 @@ body {
     text-align: center;
 }
 
-#asset-text > h2 {
+#asset-text-tts > h2 {
     margin-bottom: 1rem;
 }
-#asset-text > textarea {
+#asset-text-tts > textarea {
     background-color: #1a1a1a;
     border: 0.15rem solid #ffffff;
     height: 8.5rem;
@@ -137,7 +137,7 @@ body {
     resize: none;
     transition: .25s;
 }
-#asset-text > p {
+#asset-text-tts > p {
     margin-top: 0.5rem;
     color: #838383;
 }

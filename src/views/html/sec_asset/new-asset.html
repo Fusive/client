@@ -31,7 +31,7 @@
             <input type="file" id="asset-file-input" accept=".mp4, .jpg, .png, .gif, .mp3" title="Drop a file here">
             <h3 id="asset-file-logs">Drag and drop or select a file</h3>
         </div>
-        <div id="asset-text">
+        <div id="asset-text-tts">
             <h2>Text to read:</h2>
             <textarea id="asset-text-area" maxlength="200" autocomplete="off" spellcheck="false" placeholder="Time to hydrate..."></textarea>
             <p id="asset-text-count">0 / 200</p>
@@ -41,6 +41,14 @@
                 <label>Channel Points Title:</label>
                 <input type="text" id="asset-title-input" maxlength="70" placeholder="The name of the channel points reward">
             </div>
+            <div id="asset-url" class="asset-option">
+                <label>Youtube URL:</label>
+                <input type="text" id="asset-url-input" placeholder="https://youtu.be/dQw4w9WgXcQ">
+            </div>
+            <div id="asset-text" class="asset-option">
+                <label>Text:</label>
+                <input type="text" id="asset-text-input" placeholder="Sample Text">
+            </div>
             <div id="asset-volume" class="asset-option">
                 <label>Volume:</label>
                 <input type="number" id="asset-volume-input" maxlength="70" min="0" max="100" placeholder="The volume of the video/audio">
@@ -48,6 +56,22 @@
             <div id="asset-duration" class="asset-option">
                 <label>Duration:</label>
                 <input type="number" id="asset-duration-input" maxlength="70" min="0" placeholder="The seconds the asset will be displayed">
+            </div>
+            <div id="asset-start" class="asset-option">
+                <label>Start:</label>
+                <input type="number" id="asset-start-input" maxlength="70" min="0" placeholder="The seconds at which the video starts">
+            </div>
+            <div id="asset-end" class="asset-option">
+                <label>End:</label>
+                <input type="number" id="asset-end-input" maxlength="70" min="0" placeholder="The seconds at which the video ends">
+            </div>
+            <div id="asset-size" class="asset-option">
+                <label>Size:</label>
+                <input type="number" id="asset-size-input" maxlength="70" min="0" max="200" value="60" placeholder="The size of the font in pixels">
+            </div>
+            <div id="asset-color" class="asset-option">
+                <label>Color:</label>
+                <input type="text" id="asset-color-input" maxlength="8" placeholder="The color in hexadecimal, ex: ff0000">
             </div>
             <div id="asset-voice" class="asset-option">
                 <label>Voice:</label>

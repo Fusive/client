@@ -67,7 +67,7 @@ const addNewAssetWindow = () => {
 
     newAssetWindow = new BrowserWindow({
         width: 850,
-        height: 600,
+        height: 750,
         resizable: false,
         webPreferences: {
             devTools: process.env.NODE !== undefined ? true : false,
@@ -98,7 +98,7 @@ const addEditAssetWindow = (asset) => {
 
     editAssetWindow = new BrowserWindow({
         width: 850,
-        height: 600,
+        height: 750,
         resizable: false,
         webPreferences: {
             devTools: process.env.NODE !== undefined ? true : false,
