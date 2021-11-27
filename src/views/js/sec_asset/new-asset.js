@@ -345,7 +345,7 @@ const handleLoad = () => {
                 showAlert("The end can't be a negative number");
                 return;
             }
-            data['duration'] = (data['duration'] === "") ? null : parseInt(data['duration']);
+            data['duration'] = null;
             data['volume'] = parseInt(data['volume']);
             data['start'] = (data['start'] === "") ? null : parseInt(data['start']);
             data['end'] = (data['end'] === "") ? null : parseInt(data['end']);
@@ -387,6 +387,9 @@ const handleLoad = () => {
             if (data['color'] !== "" && !checkColor(data['color'])) {
                 showAlert("Please insert a valid color");
                 return;
+            }
+            else if (data['color'] === "") {
+                data['color'] = "000000";
             }
             data['duration'] = (data['duration'] === "") ? null : parseInt(data['duration']);
             data['size'] = (data['size'] === "") ? 60 : parseInt(data['size']);

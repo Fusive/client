@@ -23,12 +23,10 @@ ipcRenderer.on('path:get', (e, path) => {
 
 
 const getAuth = () => {
-    console.log("sending get");
     ipcRenderer.send('auth:get');
 };
 
 ipcRenderer.on('auth:get', (e, data) => {
-    console.log("receiving get");
     if (!data.valid) {
         document.getElementById("auth-missing").style.opacity = 1;
         document.getElementById("auth-missing").style.top = "50%";
