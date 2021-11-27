@@ -25,6 +25,7 @@ var mainWindow;
 var newAssetWindow = null;
 var editAssetWindow = null;
 var authWindow = null;
+var helpWindow = null;
 
 // JSON Database And Export Paths
 var database = "./data/data.json";
@@ -155,6 +156,37 @@ const addAuthWindow = () => {
 
 
 
+// Window In Charge Of Showing Different Help Sections
+const addHelpWindow = (page) => {
+    if (helpWindow !== null) {
+        helpWindow.destroy();
+        helpWindow = null;
+    }
+
+    helpWindow = new BrowserWindow({
+        width: 800,
+        height: 650,
+        resizable: false,
+        webPreferences: {
+            devTools: process.env.NODE !== undefined ? true : false,
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+        },
+    });
+    helpWindow.loadFile(path.join(__dirname, `views/html/sec_help/${page}.html`));
+
+    // const mainMenu = Menu.buildFromTemplate(templateMainMenu);
+    // helpWindow.setMenu(mainMenu);
+    helpWindow.setMenu(null);
+
+    helpWindow.on('closed', () => {
+        helpWindow = null;
+    });
+}
+
+
+
 
 
 // Database Functions And Window Cummunication Events
@@ -275,6 +307,12 @@ ipcMain.on('asset:delete', async (e, id) => {
 
 
 
+ipcMain.on('version:get', async (e) => {
+    e.sender.send('version:get', pjson.version);
+});
+
+
+
 
 
 // Menu Templates
@@ -320,15 +358,21 @@ const templateMainMenu = [
         submenu: [
             {
                 label: 'Tutorial',
-                click() {},
+                click() {
+                    addHelpWindow('tutorial');
+                },
             },
             {
                 label: 'Info',
-                click() {},
+                click() {
+                    addHelpWindow('info');
+                },
             },
             {
                 label: 'Report A Bug',
-                click() {},
+                click() {
+                    addHelpWindow('report_a_bug');
+                },
             },
         ],
     },
