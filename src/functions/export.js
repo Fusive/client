@@ -59,18 +59,15 @@ const eFuncs = {
                 fileText += `asset = "${assets[i]['id']}.${assets[i]['assetName'].substr(assets[i]['assetName'].length-3,3)}",\n\t`;
             }
             else if (assets[i]['type'] === "Voice") {
-                if (assets[i]['text'] !== null) {
-                    fileText += `asset = "${assets[i]['text']}",\n\t`;
-                }
-                else {
-                    fileText += `asset = ${assets[i]['text']},\n\t`;
-                }
+                if (assets[i]['text'] !== null) fileText += `asset = "${assets[i]['text']}",\n\t`;
+                else fileText += `asset = ${assets[i]['text']},\n\t`;
             }
             else if (assets[i]['type'] === "Youtube") {
                 fileText += `asset = "${assets[i]['url']}",\n\t`;
             }
             else if (assets[i]['type'] === "Text") {
-                fileText += `asset = "${assets[i]['text']}",\n\t`;
+                if (assets[i]['text'] !== null) fileText += `asset = "${assets[i]['text']}",\n\t`;
+                else fileText += `asset = ${assets[i]['text']},\n\t`;
             }
 
             fileText += `duration = ${assets[i]['duration']},\n\t`;

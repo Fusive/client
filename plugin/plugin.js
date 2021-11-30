@@ -123,10 +123,11 @@ class socketYoutube extends socketAsset {
 class socketText extends socketAsset {
 
     // Class Constructor
-    constructor (title, asset, duration=10, size=null, color=null) {
+    constructor (title, asset, duration=10, size=null, color=null, userText) {
         super(title, asset, duration);
         this.size = size;
         this.color = color;
+        this.userText = userText;
         this.type = "text";
 
         socketAsset.assetList.push(this);
