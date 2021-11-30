@@ -235,6 +235,7 @@ class webSocketVideoPlayer {
                     if (data.data.redemption.reward.title === asset.title) {
                         if (asset.userText) {
                             asset.asset = data.data.redemption.reward.prompt;
+                            if (asset.asset === null) asset.asset = "No user input detected";
                         }
                         console.log(`[VideoPlayer]: Playing ${asset.asset}...`);
                         webSocketControl.sendLog({type: "VideoPlayer", content: `Playing ${asset.asset}...`});

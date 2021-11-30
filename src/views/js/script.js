@@ -115,12 +115,12 @@ const addAsset = (asset) => {
                 <p>Voice: ${asset['voice']}</p>
             </div>
         `}
-        ${(asset['start'] === undefined) ? "" : `
+        ${(asset['start'] === undefined || asset['start'] === null) ? "" : `
             <div class="asset-start asset-text-data">
                 <p>Start: ${asset['start'].toString()}s</p>
             </div>
         `}
-        ${(asset['end'] === undefined) ? "" : `
+        ${(asset['end'] === undefined || asset['end'] === null) ? "" : `
             <div class="asset-end asset-text-data">
                 <p>End: ${asset['end'].toString()}s</p>
             </div>
