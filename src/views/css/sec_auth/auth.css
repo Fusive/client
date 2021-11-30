@@ -72,6 +72,7 @@ body {
     transition: .25s;
     width: 18%;
     min-width: 8rem;
+    margin: 2.25rem;
 }
 #auth-container > button:enabled:hover {
     color: #1dd3b0;
@@ -81,6 +82,75 @@ body {
     color: #aaaaaa;
     background-color: #333333;
     cursor: default;
+}
+
+#auth-checkboxes {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-content: flex-end;
+}
+.auth-checkbox-container {
+    display: block;
+    position: relative;
+    padding: 0 1.75rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+}
+.auth-checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.auth-checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.25rem;
+    width: 1.25rem;
+    background-color: #ffffff;
+    transition: .1s ease-in-out;
+}
+.auth-checkbox-container:hover input ~ .auth-checkbox {
+    background-color: #cccccc;
+}
+.auth-checkbox-container input:checked ~ .auth-checkbox {
+    background-color: #1dd3b0;
+}
+.auth-checkbox-container input:checked:disabled ~ .auth-checkbox {
+    background-color: #086375;
+}
+.auth-checkbox:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.auth-checkbox-container input:checked ~ .auth-checkbox:after {
+    display: block;
+}
+.auth-checkbox-container .auth-checkbox:after {
+    left: 0.35rem;
+    top: 0.15rem;
+    width: 5px;
+    height: 10px;
+    border: solid #ffffff;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.auth-checkbox-container input:disabled ~ .auth-checkbox:after {
+    left: 0.35rem;
+    top: 0.15rem;
+    width: 5px;
+    height: 10px;
+    border: solid #aaaaaa;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
 }
 
 

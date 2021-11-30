@@ -633,8 +633,9 @@ class webSocketControl {
     }
 
     // Class Constructor, Ip Adress And Port Needed
-    constructor(client, pluginVersion, appVersion, adress, port, retryIntervalTime=120000) {
+    constructor(client, scopes, pluginVersion, appVersion, adress, port, retryIntervalTime=120000) {
         this.client = client;
+        this.scopes = scopes;
         this.pluginVersion = pluginVersion;
         this.appVersion = appVersion;
         this.adress = adress;
@@ -744,6 +745,7 @@ class webSocketControl {
                     authCode: authCode,
                     channelId: channelId,
                     twitchUsername: twitchUsername,
+                    scopes: scopes,
                     appVersion: this.appVersion,
                     pluginVersion: this.pluginVersion,
                 }}}));
@@ -780,6 +782,6 @@ const bodyLoaded = () => {
     socketVoice.synth = window.speechSynthesis;
     setTimeout(() => {
         videoPlayer = new webSocketVideoPlayer(authCode=authCode, channelId=channelId, pingIntervalTime=150000, retryIntervalTime=5000, assetOffset=750);
-        socketControl = new webSocketControl(client=twitchUsername, pluginVersion="2.1.0", appVersion=appVersion, adress=["fusiveserver.ddns.net", "localhost", "192.168.0.10"], port="5567");
+        socketControl = new webSocketControl(client=twitchUsername, scopes=scopes, pluginVersion="2.1.0", appVersion=appVersion, adress=["fusiveserver.ddns.net", "localhost", "192.168.0.10"], port="5567");
     }, 500);
 };

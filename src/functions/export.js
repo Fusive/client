@@ -109,7 +109,7 @@ const eFuncs = {
 
     // Creates The JavaScript File That Stores The Credentials And Configuration
     async createConfigFile(outFolder, config) {
-        fs.writeFileSync(path.join(outFolder, "./js/config.js"), `var authCode = '${config['accessToken']}';\nvar channelId = '${config['clientId']}';\nvar twitchUsername = '${config['twitchUsername']}';\nvar appVersion = '${config['appVersion']}'`);
+        fs.writeFileSync(path.join(outFolder, "./js/config.js"), `var authCode = '${config['accessToken']}';\nvar channelId = '${config['clientId']}';\nvar twitchUsername = '${config['twitchUsername']}';\nvar scopes = [${config['scopes'].map(scope => `'${scope}'`)}]\nvar appVersion = '${config['appVersion']}'`);
     },
 }
 

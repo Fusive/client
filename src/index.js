@@ -133,8 +133,8 @@ const addAuthWindow = () => {
     }
 
     authWindow = new BrowserWindow({
-        width: 400,
-        height: 500,
+        width: 500,
+        height: 700,
         resizable: false,
         webPreferences: {
             devTools: process.env.NODE !== undefined ? true : false,
@@ -211,6 +211,7 @@ const createExportFiles = async () => {
         'accessToken': token,
         'clientId': userCred["clientId"],
         'twitchUsername': userCred["twitchUsername"],
+        'scopes': userCred["scopes"],
         'appVersion': pjson.version,
     };
     await eFuncs.createConfigFile(outFolder, config);
@@ -231,7 +232,7 @@ ipcMain.on('auth:get', async (e) => {
     let data = await gFuncs.twitchValidateToken(token);
     if (data) {
         e.sender.send('auth:get', {token, valid: true});
-        await dFuncs.addUserCred(database, data['user_id'], data['login']);
+        await dFuncs.addUserCred(database, data['user_id'], data['login'], data['scopes']);
     }
     else e.sender.send('auth:get', {token, valid: false});
 

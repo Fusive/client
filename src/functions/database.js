@@ -206,18 +206,21 @@ const dFuncs = {
         let data = await this.readFromDatabase(database);
         if (data['clientId'] === undefined) data['clientId'] = "";
         if (data['twitchUsername'] === undefined) data['twitchUsername'] = "";
+        if (data['scopes'] === undefined) data['scopes'] = [];
         await this.writeDataToDatabase(database, data);
-        return {"clientId": data["clientId"], "twitchUsername": data["twitchUsername"]};
+        return {"clientId": data["clientId"], "twitchUsername": data["twitchUsername"], "scopes": data["scopes"]};
     },
 
     // Adds User Information To The Database File
-    async addUserCred(database, clientId, twitchUsername) {
+    async addUserCred(database, clientId, twitchUsername, scopes) {
         let data = await this.readFromDatabase(database);
         if (data['clientId'] === undefined) data['clientId'] = "";
         if (data['twitchUsername'] === undefined) data['twitchUsername'] = "";
+        if (data['scopes'] === undefined) data['scopes'] = [];
 
         data['clientId'] = clientId;
         data['twitchUsername'] = twitchUsername;
+        data['scopes'] = scopes;
         await this.writeDataToDatabase(database, data);
     },
 
@@ -226,6 +229,7 @@ const dFuncs = {
         let data = await this.readFromDatabase(database);
         data['clientId'] = "";
         data['twitchUsername'] = "";
+        data['scopes'] = [];
         await this.writeDataToDatabase(database, data);
     },
 }

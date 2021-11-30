@@ -15,6 +15,28 @@
     <div id="auth-container">
         <h2>Login With Twitch:</h2>
         <p>Authenticate with twitch to be able to use the application, if you already authorized the app but the plugin gives an error press login again</p>
+        <div id="auth-checkboxes">
+            <label class="auth-checkbox-container">Read Channel Points
+                <input class="auth-input-checkbox" type="checkbox" disabled checked>
+                <span class="auth-checkbox"></span>
+            </label>
+            <label class="auth-checkbox-container">Manage And Read Polls
+                <input class="auth-input-checkbox" type="checkbox">
+                <span class="auth-checkbox"></span>
+            </label>
+            <label class="auth-checkbox-container">Manage And Read Predictions
+                <input class="auth-input-checkbox" type="checkbox">
+                <span class="auth-checkbox"></span>
+            </label>
+            <label class="auth-checkbox-container">Channel Moderation
+                <input class="auth-input-checkbox" type="checkbox" checked>
+                <span class="auth-checkbox"></span>
+            </label>
+            <label class="auth-checkbox-container">Channel Read And Edit
+                <input class="auth-input-checkbox" type="checkbox" checked>
+                <span class="auth-checkbox"></span>
+            </label>
+        </div>
         <button id="auth-login">LOGIN</button>
     </div>
 
