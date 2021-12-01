@@ -6,6 +6,7 @@ const handleLoad = () => {
     getPath();
     getAuth();
     getAssets();
+    getActions();
 }
 
 
@@ -49,6 +50,10 @@ document.getElementById("auth-button").addEventListener('click', () => {
 
 const getAssets = () => {
     ipcRenderer.send('asset:get');
+}
+
+const getActions = () => {
+    ipcRenderer.send('action:get');
 }
 
 const addAsset = (asset) => {
@@ -168,12 +173,68 @@ const addAsset = (asset) => {
 
 
 
+const addAction = (action) => {
+    let preview;
+    preview = `
+        <p>${action['type']}</p>
+    `;
+
+    document.getElementById("assets-list").innerHTML += `
+    <div class="asset-container" id="asset-${action['id']}" title="id: ${action['id']}">
+        <div class="asset-preview">
+            ${preview}
+        </div>
+        ${(action['title'] === "") ? "" : `
+            <div class="asset-title asset-text-data">
+                <p>Title: ${action['title']}</p>
+            </div>
+        `}
+        ${(action['min-time'] === undefined) ? "" : `
+            <div class="asset-min-time asset-text-data">
+                <p>Min Time: ${action['min-time'].toString()}</p>
+            </div>
+        `}
+        ${(action['max-time'] === undefined) ? "" : `
+            <div class="asset-max-time asset-text-data">
+                <p>Max Time: ${action['max-time'].toString()}</p>
+            </div>
+        `}
+        ${(action['reason'] === "" || !action['reason']) ? "" : `
+            <div class="asset-reason asset-text-data">
+                <p>Reason: ${action['reason']}</p>
+            </div>
+        `}
+        <div class="asset-options">
+            <button class="asset-edit" onclick="editCurrentAction('${action['id']}')">Edit</button>
+            <button class="asset-delete" onclick="deleteCurrentAction('${action['id']}')">Delete</button>
+        </div>
+    </div>
+    `;
+
+    if (document.getElementsByClassName('asset-container').length > 0) {
+        document.getElementById("no-assets").style.display = "none";
+    }
+    else {
+        document.getElementById("no-assets").style.display = "block";
+    }
+}
+
+
+
 const editCurrentAsset = (id) => {
     ipcRenderer.send('asset:edit-req', id);
 }
 
 const deleteCurrentAsset = (id) => {
     ipcRenderer.send('asset:delete', id);
+}
+
+const editCurrentAction = (id) => {
+    ipcRenderer.send('action:edit-req', id);
+}
+
+const deleteCurrentAction = (id) => {
+    ipcRenderer.send('action:delete', id);
 }
 
 
@@ -184,7 +245,17 @@ ipcRenderer.on('asset:get', (e, assets) => {
     }
 });
 
+ipcRenderer.on('action:get', (e, actions) => {
+    for (let i = 0; i < actions.length; ++i) {
+        addAction(actions[i]);
+    }
+});
+
 ipcRenderer.on('asset:new', (e, newAsset) => {
+    location.reload();
+});
+
+ipcRenderer.on('action:new', (e, newAction) => {
     location.reload();
 });
 
@@ -194,7 +265,28 @@ ipcRenderer.on('asset:edit', (e, editedAsset, response) => {
     }
 });
 
+ipcRenderer.on('action:edit', (e, editedAction, response) => {
+    if (response) {
+        location.reload();
+    }
+});
+
 ipcRenderer.on('asset:delete', (e, id, response) => {
+    if (response) {
+        document.getElementById(`asset-${id}`).style.opacity = 0;
+        setTimeout(() => {
+            document.getElementById(`asset-${id}`).remove();
+            if (document.getElementsByClassName('asset-container').length > 0) {
+                document.getElementById("no-assets").style.display = "none";
+            }
+            else {
+                document.getElementById("no-assets").style.display = "block";
+            }
+        }, 250);
+    }
+});
+
+ipcRenderer.on('action:delete', (e, id, response) => {
     if (response) {
         document.getElementById(`asset-${id}`).style.opacity = 0;
         setTimeout(() => {

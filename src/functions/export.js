@@ -88,7 +88,7 @@ const eFuncs = {
             }
             else if (assets[i]['type'] === "Youtube") {
                 fileText += `start = ${assets[i]['start']},\n\t`;
-                fileText += `end = ${assets[i]['end']},\n`;
+                fileText += `end = ${assets[i]['end']}\n`;
             }
             else if (assets[i]['type'] === "Text") {
                 fileText += `size = ${assets[i]['size']},\n\t`;
@@ -100,6 +100,24 @@ const eFuncs = {
         }
 
         fs.writeFileSync(path.join(outFolder, "./js/assets.js"), fileText);
+    },
+
+
+
+    // Creates The JavaScript File That Stores The Actions Data
+    async createActionsFile(outFolder, actions) {
+        let fileText = "";
+        for (let i = 0; i < actions.length; ++i) {
+            fileText += `new action(\n\t`;
+            fileText += `type = "${actions[i]['type']}",\n\t`;
+            fileText += `title = "${actions[i]['title']}",\n\t`;
+            if (actions[i]['reason']) fileText += `reason = "${actions[i]['reason']}",\n\t`;
+            fileText += `minTime = ${actions[i]['min-time']},\n\t`;
+            fileText += `maxTime = ${actions[i]['max-time']}\n`;
+            fileText += ");\n\n";
+        }
+
+        fs.writeFileSync(path.join(outFolder, "./js/actions.js"), fileText);
     },
 
 

@@ -24,6 +24,8 @@ if (process.env.NODE !== undefined) {
 var mainWindow;
 var newAssetWindow = null;
 var editAssetWindow = null;
+var newActionWindow = null;
+var editActionWindow = null;
 var authWindow = null;
 var helpWindow = null;
 
@@ -125,6 +127,72 @@ const addEditAssetWindow = (asset) => {
 
 
 
+// Window In Charge Of Creating The Data Of A Single Action
+const addNewActionWindow = () => {
+    if (newActionWindow !== null) {
+        newActionWindow.destroy();
+        newActionWindow = null;
+    }
+
+    newActionWindow = new BrowserWindow({
+        width: 600,
+        height: 650,
+        resizable: false,
+        webPreferences: {
+            devTools: process.env.NODE !== undefined ? true : false,
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+        },
+    });
+    newActionWindow.loadFile(path.join(__dirname, "views/html/sec_action/new-action.html"));
+
+    // const mainMenu = Menu.buildFromTemplate(templateMainMenu);
+    // newActionWindow.setMenu(mainMenu);
+    newActionWindow.setMenu(null);
+
+    newActionWindow.on('closed', () => {
+        newActionWindow = null;
+    });
+}
+
+
+
+// Window In Charge Of Editing The Data Of A Single Action
+const addEditActionWindow = (action) => {
+    if (editActionWindow !== null) {
+        editActionWindow.destroy();
+        editActionWindow = null;
+    }
+
+    editActionWindow = new BrowserWindow({
+        width: 600,
+        height: 650,
+        resizable: false,
+        webPreferences: {
+            devTools: process.env.NODE !== undefined ? true : false,
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+        },
+    });
+    editActionWindow.loadFile(path.join(__dirname, "views/html/sec_action/edit-action.html"));
+
+    // const mainMenu = Menu.buildFromTemplate(templateMainMenu);
+    // editActionWindow.setMenu(mainMenu);
+    editActionWindow.setMenu(null);
+
+    editActionWindow.on('ready-to-show', () => {
+        editActionWindow.webContents.send('action:edit', action);
+    });
+
+    editActionWindow.on('closed', () => {
+        editActionWindow = null;
+    });
+}
+
+
+
 // Window In Charge Of Handling The Twitch Authentication
 const addAuthWindow = () => {
     if (authWindow !== null) {
@@ -205,6 +273,9 @@ const createExportFiles = async () => {
     let assets = await dFuncs.getAssets(database);
     await eFuncs.createAssetsFile(outFolder, assets);
 
+    let actions = await dFuncs.getActions(database);
+    await eFuncs.createActionsFile(outFolder, actions);
+
     let token = await dFuncs.getToken(database);
     let userCred = await dFuncs.getUserCred(database);
     var config = {
@@ -262,6 +333,12 @@ ipcMain.on('auth:menu', async (e) => {
     addAuthWindow();
 });
 
+ipcMain.on('credentials:get', async (e) => {
+    let data = await dFuncs.getUserCred(database);
+
+    e.sender.send('credentials:get', data);
+});
+
 
 
 ipcMain.on('asset:get', async (e) => {
@@ -271,7 +348,7 @@ ipcMain.on('asset:get', async (e) => {
 
 ipcMain.on('asset:new', async (e, newAsset) => {
     newAsset['local'] = true;
-    newAsset['id'] = await dFuncs.createId(database);
+    newAsset['id'] = await dFuncs.createAssetId(database);
 
     await dFuncs.addAsset(database, newAsset);
     delete newAsset['assetContent'];
@@ -308,6 +385,46 @@ ipcMain.on('asset:delete', async (e, id) => {
 
 
 
+ipcMain.on('action:get', async (e) => {
+    let actions = await dFuncs.getActions(database);
+    e.sender.send('action:get', actions);
+});
+
+ipcMain.on('action:new', async (e, newAction) => {
+    newAction['id'] = await dFuncs.createActionId(database);
+
+    await dFuncs.addAction(database, newAction);
+    await mainWindow.webContents.send('action:new', newAction);
+
+    await createExportFiles();
+
+    e.sender.destroy();
+});
+
+ipcMain.on('action:edit-req', async (e, id) => {
+    let action = await dFuncs.getActions(database, id);
+    addEditActionWindow(action);
+});
+
+ipcMain.on('action:edit-save', async (e, action) => {
+    let response = await dFuncs.editAction(database, action);
+    mainWindow.webContents.send('action:edit', action, response);
+
+    await createExportFiles();
+
+    e.sender.destroy();
+});
+
+ipcMain.on('action:delete', async (e, id) => {
+    let response = await dFuncs.deleteAction(database, id);
+
+    await createExportFiles();
+
+    e.sender.send('action:delete', id, response);
+});
+
+
+
 ipcMain.on('version:get', async (e) => {
     e.sender.send('version:get', pjson.version);
 });
@@ -326,6 +443,13 @@ const templateMainMenu = [
                 accelerator: process.platform === 'darwin' ? 'command+N' : 'Ctrl+N',
                 click() {
                     addNewAssetWindow();
+                },
+            },
+            {
+                label: 'New Action',
+                accelerator: process.platform === 'darwin' ? 'command+Shift+N' : 'Ctrl+Shift+N',
+                click() {
+                    addNewActionWindow();
                 },
             },
             {

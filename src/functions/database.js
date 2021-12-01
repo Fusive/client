@@ -63,7 +63,7 @@ const dFuncs = {
 
 
     // Creates A Unique ID For An Asset
-    async createId(database) {
+    async createAssetId(database) {
         let id = "";
         let data = await this.readFromDatabase(database);
         while (true) {
@@ -161,6 +161,97 @@ const dFuncs = {
                     }
 
                     data['assets'].splice(i, 1);
+                    await this.writeDataToDatabase(database, data);
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
+
+
+
+    // Creates A Unique ID For An Action
+    async createActionId(database) {
+        let id = "";
+        let data = await this.readFromDatabase(database);
+        while (true) {
+            for (let i = 0; i < 16; ++i) {
+                id += `${gFuncs.randomInRange(0, 10)}`;
+            }
+            if (data['actions'] === undefined) {
+                break;
+            }
+            else {
+                for (let i = 0; i < data['actions']; ++i) {
+                    if (id === data['actions'][i]['id']) {
+                        continue;
+                    }
+                }
+                break;
+            }
+        }
+        return id;
+    },
+
+    // Gets A List Of All The Actions
+    async getActions(database, id=null) {
+        let data = await this.readFromDatabase(database);
+        if (data['actions'] === undefined) {
+            data['actions'] = [];
+            await this.writeDataToDatabase(database, data);
+        }
+        if (id === null) {
+            return data['actions'];
+        }
+        else {
+            for (let i = 0; i < data['actions'].length; ++i) {
+                if (data['actions'][i]['id'] === id) {
+                    return data['actions'][i];
+                }
+            }
+        }
+    },
+
+    // Adds An Action To The Database File
+    async addAction(database, action) {
+        let data = await this.readFromDatabase(database);
+        if (data['actions'] === undefined) {
+            data['actions'] = [];
+        }
+
+        data['actions'].push(action);
+        await this.writeDataToDatabase(database, data);
+    },
+
+    // Edits An Action Data In The Database File
+    async editAction(database, action) {
+        let data = await this.readFromDatabase(database);
+
+        let deleted = false;
+        let newDataActions = [];
+        for (let i = 0; i < data['actions'].length; ++i) {
+            if (data['actions'][i]['id'] === action['id']) {
+                newDataActions.push(action);
+                deleted = true;
+            }
+            else {
+                newDataActions.push(data['actions'][i]);
+            }
+        }
+
+        data['actions'] = newDataActions;
+        await this.writeDataToDatabase(database, data);
+        return deleted;
+    },
+
+    // Deletes An Action Selecting It By Its ID
+    async deleteAction(database, id) {
+        let data = await this.readFromDatabase(database);
+        if (data['actions'] !== undefined) {
+            for (let i = 0; i < data['actions'].length; ++i) {
+                if (data['actions'][i]['id'] == id) {
+                    data['actions'].splice(i, 1);
                     await this.writeDataToDatabase(database, data);
                     return true;
                 }

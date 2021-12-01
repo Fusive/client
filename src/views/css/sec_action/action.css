@@ -1,0 +1,179 @@
+body, body * {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', arial;
+    color: #ffffff;
+}
+
+body {
+    background-color: #1a1a1a;
+    overflow: hidden;
+}
+
+
+
+
+
+#alert {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    z-index: 3;
+    position: absolute;
+    left: 2%;
+    bottom: -20%;
+    opacity: 0;
+    min-width: 10rem;
+    max-width: 25%;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+    transition: .5s;
+}
+
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    font-size: 2rem;
+}
+
+#action-type {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: #1a1a1a;
+    transition: .25s;
+}
+#action-type > h2 {
+    margin: 2.5rem 0;
+}
+#action-type > button {
+    margin: 0.85rem 0;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.6rem 0.6rem;
+    background-color: #1dd3b0;
+    cursor: pointer;
+    transition: .25s;
+    width: 18%;
+    min-width: 8rem;
+}
+#action-type > button:hover {
+    color: #1dd3b0;
+    background-color: #ffffff;
+}
+#action-type > button:disabled {
+    background-color: #086375;
+    color: #aaaaaa;
+    cursor: default;
+}
+
+#return-button {
+    position: absolute;
+    margin: 1rem;
+}
+#return-button svg {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 3;
+    cursor: pointer;
+    transition: .25s;
+}
+#return-button svg:hover {
+    transform: scale(1.2);
+    stroke: #1dd3b0;
+}
+
+#action-form {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#action-options {
+    width: 60vw;
+}
+#action-options > * {
+    margin: 1.8rem 0;
+}
+#action-options > * > label {
+    font-weight: 600;
+}
+#action-options > * > input, #action-options > * > select {
+    margin-top: 0.5rem;
+    background-color: #1a1a1a;
+    border: 0.15rem solid #ffffff;
+    padding: 0.3rem 0.5rem;
+    transition: .25s;
+    font-size: 0.95rem;
+}
+#action-options > * > input:focus, #action-options > * > select:focus {
+    border-color: #1dd3b0;
+}
+.action-option {
+    display: flex;
+    flex-direction: column;
+}
+
+#action-save > button {
+    background-color: #1dd3b0;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    transition: .25s;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+#action-save > button:hover {
+    background-color: #ffffff;
+    color: #1dd3b0;
+}
+
+
+
+
+
+/* Edit Scrollbar */
+/* Width */
+::-webkit-scrollbar {
+    width: 1rem;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #353535;
+}
+/* Handle On Hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #333333;
+}
+
+
+
+/* Remove Input Outlines */
+input:focus, button:focus, textarea:focus, select:focus {
+    outline: none;
+}
+
+
+
+/* Disable Number Input Arrows */
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
