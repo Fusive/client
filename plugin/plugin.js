@@ -138,6 +138,27 @@ class socketText extends socketAsset {
 
 
 
+class action {
+
+    // List Of The Actions Class Instances
+    static actionsList = [];
+
+    // Class Constructor
+    constructor(type, title, reason=null, minTime, maxTime) {
+        this.type = type;
+        this.title = title;
+        this.reason = reason;
+        this.minTime = minTime;
+        this.maxTime = maxTime;
+
+        action.actionsList.push(this);
+    }
+}
+
+
+
+
+
 // Twitch Video Player Web Socket Class
 class webSocketVideoPlayer {
 
@@ -244,6 +265,16 @@ class webSocketVideoPlayer {
                         if (this.assetQueue.length === 1 && this.assetQueue[0] === asset && !this.assetPlaying) {
                             this.manageAssets();
                         }
+                    }
+                }
+
+                for (let act of action.actionsList) {
+                    if (data.data.redemption.reward.title === act.title) {
+                        act['input'] = data.data.redemption['user_input'];
+                        console.log(`[VideoPlayer]: Performing Action ${act.type}...`);
+                        webSocketControl.sendLog({type: "VideoPlayer", content: `Performing Action ${act.type}...`});
+                        act['authCode'] = this.authCode;
+                        if (!webSocketControl.sendAction(act)) console.log(`[VideoPlayer]: Failed To Perform Action`);
                     }
                 }
             }
@@ -623,7 +654,7 @@ class webSocketControl {
 
     // Keeps Track Of Whether The Control Socket Is Connected Or Not
     static socketConnected = false;
-    static socketInstance;
+    static socketInstance = null;
 
     static sendLog(message) {
         if (webSocketControl.socketConnected) {
@@ -632,6 +663,14 @@ class webSocketControl {
                 content: message.content
             }));
         }
+    }
+
+    static sendAction(action) {
+        if (webSocketControl.socketConnected) {
+            webSocketControl.socketInstance.ws.send(JSON.stringify(action));
+            return true;
+        }
+        return false;
     }
 
     // Class Constructor, Ip Adress And Port Needed
@@ -784,6 +823,6 @@ const bodyLoaded = () => {
     socketVoice.synth = window.speechSynthesis;
     setTimeout(() => {
         videoPlayer = new webSocketVideoPlayer(authCode=authCode, channelId=channelId, pingIntervalTime=150000, retryIntervalTime=5000, assetOffset=750);
-        socketControl = new webSocketControl(client=twitchUsername, scopes=scopes, pluginVersion="2.1.0", appVersion=appVersion, adress=["fusiveserver.ddns.net", "localhost", "192.168.0.10"], port="5567");
+        socketControl = new webSocketControl(client=twitchUsername, scopes=scopes, pluginVersion="2.2.0", appVersion=appVersion, adress=["fusiveserver.ddns.net", "localhost", "192.168.0.10"], port="5567");
     }, 500);
 };
