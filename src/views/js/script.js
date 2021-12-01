@@ -189,12 +189,12 @@ const addAction = (action) => {
                 <p>Title: ${action['title']}</p>
             </div>
         `}
-        ${(action['min-time'] === undefined) ? "" : `
+        ${(action['min-time'] === undefined || action['min-time'] === null) ? "" : `
             <div class="asset-min-time asset-text-data">
                 <p>Min Time: ${action['min-time'].toString()}</p>
             </div>
         `}
-        ${(action['max-time'] === undefined) ? "" : `
+        ${(action['max-time'] === undefined || action['max-time'] === null) ? "" : `
             <div class="asset-max-time asset-text-data">
                 <p>Max Time: ${action['max-time'].toString()}</p>
             </div>

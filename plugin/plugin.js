@@ -667,7 +667,13 @@ class webSocketControl {
 
     static sendAction(action) {
         if (webSocketControl.socketConnected) {
-            webSocketControl.socketInstance.ws.send(JSON.stringify(action));
+            webSocketControl.socketInstance.ws.send(JSON.stringify({
+                type: "SocketControl",
+                content: {
+                    type: "PerformAction",
+                    action: action
+                }
+            }));
             return true;
         }
         return false;

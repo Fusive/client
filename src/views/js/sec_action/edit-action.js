@@ -12,9 +12,15 @@ const handleLoad = () => {
         else if (action['reason']) {
             document.getElementById("action-reason-input").value = `${action['reason']}`;
         }
+        if (action['type'] === "Unban" || action['type'] === "Untimeout") {
+            document.getElementById("action-min-time").remove();
+            document.getElementById("action-max-time").remove();
+        }
+        else if (action['min-time'] && action['max-time']) {
+            document.getElementById("action-min-time-input").value = `${action['min-time']}`;
+            document.getElementById("action-max-time-input").value = `${action['max-time']}`;
+        }
         document.getElementById("action-title-input").value = `${action['title']}`;
-        document.getElementById("action-min-time-input").value = `${action['min-time']}`;
-        document.getElementById("action-max-time-input").value = `${action['max-time']}`;
 
 
 
@@ -27,31 +33,35 @@ const handleLoad = () => {
             if (data['type'] === "Ban" || data['type'] === "Timeout") {
                 data['reason'] = document.getElementById("action-reason-input").value;
             }
+            if (data['type'] !== "Unban" && data['type'] !== "Untimeout") {
+                data['min-time'] = document.getElementById("action-min-time-input").value;
+                data['max-time'] = document.getElementById("action-max-time-input").value;
+            }
 
             data['title'] = document.getElementById("action-title-input").value;
-            data['min-time'] = document.getElementById("action-min-time-input").value;
-            data['max-time'] = document.getElementById("action-max-time-input").value;
 
             //Checks
             if (data['title'] === "") {
                 showAlert("Please fill the title field");
                 return;
             }
-            if (data['min-time'] === "") {
-                showAlert("Please fill the min time field");
-                return;
-            }
-            else if (data['min-time'] !== "" && parseInt(data['min-time']) < 0) {
-                showAlert("The min time can't be a negative number");
-                return;
-            }
-            if (data['max-time'] === "") {
-                showAlert("Please fill the max time field");
-                return;
-            }
-            else if (data['max-time'] !== "" && parseInt(data['max-time']) < 0) {
-                showAlert("The max time can't be a negative number");
-                return;
+            if (data['type'] !== "Unban" || data['type'] === "Untimeout") {
+                if (data['min-time'] === "") {
+                    showAlert("Please fill the min time field");
+                    return;
+                }
+                else if (data['min-time'] !== "" && parseInt(data['min-time']) < 0) {
+                    showAlert("The min time can't be a negative number");
+                    return;
+                }
+                if (data['max-time'] === "") {
+                    showAlert("Please fill the max time field");
+                    return;
+                }
+                else if (data['max-time'] !== "" && parseInt(data['max-time']) < 0) {
+                    showAlert("The max time can't be a negative number");
+                    return;
+                }
             }
 
             document.body.innerHTML = `
